@@ -1,6 +1,7 @@
 /*
 • @David-Chian
 - https://github.com/David-Chian
+- Modificado para FNaF LATAM por @Fidel-Blop
 */
 
 import { googleImage } from '@bochilteam/scraper';
@@ -41,15 +42,25 @@ async function sendAlbumMessage(jid, medias, options = {}) {
 }
 
 const handler = async (m, { conn, text, usedPrefix, command }) => {
-    if (!text) return conn.reply(m.chat, `*❀ Por favor, ingrese un texto para buscar una Imagen.`, m);
+    if (!text) {
+        return conn.reply(m.chat, `👁️‍🗨️ *El sistema de cámaras no detecta tu búsqueda.*\n\n🔍 Usa el comando así:\n${usedPrefix + command} chica fnaf`, m);
+    }
 
-    await m.react('🕒');
-    conn.reply(m.chat, '✧ *Descargando su imagen...*', m, {
-contextInfo: { externalAdReply :{ mediaUrl: null, mediaType: 1, showAdAttribution: true,
-title: packname,
-body: dev,
-previewType: 0, thumbnail: icono,
-sourceUrl: redes }}})
+    await m.react('🔍');
+    conn.reply(m.chat, '📸 *Accediendo al sistema visual de Freddy Fazbear...*', m, {
+        contextInfo: {
+            externalAdReply: {
+                mediaUrl: null,
+                mediaType: 1,
+                showAdAttribution: true,
+                title: packname,
+                body: dev,
+                previewType: 0,
+                thumbnail: icono,
+                sourceUrl: redes
+            }
+        }
+    });
 
     try {
         const res = await googleImage(text);
@@ -60,19 +71,21 @@ sourceUrl: redes }}})
             if (image) images.push({ type: "image", data: { url: image } });
         }
 
-        if (images.length < 2) return conn.reply(m.chat, '✧ No se encontraron suficientes imágenes para un álbum.', m);
+        if (images.length < 2) {
+            return conn.reply(m.chat, '❌ *Sistema de imágenes insuficiente.*\nSolo se recuperaron 1 o ninguna imagen desde la base de datos visual.', m);
+        }
 
-        const caption = `❀ *Resultados de búsqueda para:* ${text}`;
+        const caption = `🔎 *Imágenes recuperadas por el escáner de FNaF LATAM:*\n🔤 Término: ${text}`;
         await sendAlbumMessage(m.chat, images, { caption, quoted: m });
 
         await m.react('✅');
     } catch (error) {
         await m.react('❌');
-        conn.reply(m.chat, '⚠︎ Hubo un error al obtener las imágenes.', m);
+        conn.reply(m.chat, '⚠️ *Error en el sistema óptico de FNaF LATAM.* No se pudieron recuperar las imágenes solicitadas.', m);
     }
 };
 
-handler.help = ['imagen <query>'];
+handler.help = ['imagen <consulta>'];
 handler.tags = ['buscador', 'tools', 'descargas'];
 handler.command = ['imagen', 'image', 'img'];
 handler.register = true;
