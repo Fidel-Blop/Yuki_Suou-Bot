@@ -1,31 +1,77 @@
 var handler = async (m, { conn, command, text }) => {
 
-if (!text) return conn.reply(m.chat, `${emoji} Por favor, ingrese el nombre de alguna persona.`, m)
+  if (!text) return conn.reply(m.chat, '🔦 *Freddy escanea pero no detecta nombre...*\n\n💬 _Ingresa el nombre de la víctima... digo... persona._', m)
 
-let personalidad = `\`Nombre\` : ${text}
-\`Buena Moral\` : ${pickRandom(['6%','12%','20%','27%','35%','41%','49%','54%','60%','66%','73%','78%','84%','92%','93%','94%','96%','98,3%','99,7%','99,9%','1%','2,9%','0%','0,4%'])}
-\`Mala Moral\` : ${pickRandom(['6%','12%','20%','27%','35%','41%','49%','54%','60%','66%','73%','78%','84%','92%','93%','94%','96%','98,3%','99,7%','99,9%','1%','2,9%','0%','0,4%'])}
-\`Tipo de persona\` : ${pickRandom(['De buen corazón','Arrogante','Tacaño','Generoso','Humilde','Tímido','Cobarde','Entrometido','Cristal','No binarie XD', 'Pendejo'])}
-\`Siempre\` : ${pickRandom(['Pesado','De malas','Distraido','De molestoso','Chismoso','Pasa jalandosela','De compras','Viendo anime','Chatea en WhatsApp porque esta soltero','Acostado bueno para nada','De mujeriego','En el celular'])}
-\`Inteligencia\` : ${pickRandom(['9%','12%','20%','27%','35%','41%','49%','54%','60%','66%','73%','78%','84%','92%','93%','94%','96%','98,3%','99,7%','99,9%','1%','2,9%','0%','0,4%'])}
-\`Pendejo(a)\` : ${pickRandom(['9%','12%','20%','27%','35%','41%','49%','54%','60%','66%','73%','78%','84%','92%','93%','94%','96%','98,3%','99,7%','99,9%','1%','2,9%','0%','0,4%'])}
-\`Morosidad\` : ${pickRandom(['6%','12%','20%','27%','35%','41%','49%','54%','60%','66%','73%','78%','84%','92%','93%','94%','96%','98,3%','99,7%','99,9%','1%','2,9%','0%','0,4%'])}
-\`Coraje\` : ${pickRandom(['6%','12%','20%','27%','35%','41%','49%','54%','60%','66%','73%','78%','84%','92%','93%','94%','96%','98,3%','99,7%','99,9%','1%','2,9%','0%','0,4%'])}
-\`Miedo\` : ${pickRandom(['6%','12%','20%','27%','35%','41%','49%','54%','60%','66%','73%','78%','84%','92%','93%','94%','96%','98,3%','99,7%','99,9%','1%','2,9%','0%','0,4%'])}
-\`Fama\` : ${pickRandom(['6%','12%','20%','27%','35%','41%','49%','54%','60%','66%','73%','78%','84%','92%','93%','94%','96%','98,3%','99,7%','99,9%','1%','2,9%','0%','0,4%'])}
-\`Género\` : ${pickRandom(['Hombre', 'Mujer', 'Homosexual', 'Bisexual', 'Pansexual', 'Feminista', 'Heterosexual', 'Macho alfa', 'Mujerzona', 'Marimacha', 'Palosexual', 'PlayStationSexual', 'Sr. Manuela', 'Pollosexual'])}`
+  let personalidad = `📊 *ANÁLISIS COMPLETO - Freddy Fazbear's Systems™*\n
+🔎 \`Nombre\` : *${text}*
+🔋 \`Buena Moral\` : ${pickRandom(valores)}
+☠️ \`Mala Moral\` : ${pickRandom(valores)}
+🎭 \`Tipo de Persona\` : ${pickRandom([
+'Animatrónico disfrazado',
+'Niño del Llanto',
+'De buen corazón',
+'Antisocial',
+'Poseído por Marioneta',
+'Extraño',
+'Fan de FNaF',
+'Peligroso pero adorable',
+'Cristal',
+'Un glitch',
+'Error 404: personalidad no encontrada',
+'Error en base de datos de Freddy™'
+])}
+🎬 \`Siempre\` : ${pickRandom([
+'Viendo las cámaras',
+'Huyendo de Springtrap',
+'Tomando café en la oficina de seguridad',
+'Sospechando de todos',
+'Sin batería',
+'En shock por el susto de Bonnie',
+'Chateando porque nadie lo visita en la pizzería',
+'Rompiendo reglas de la noche',
+'Cantando con Freddy',
+'Asustando novatos'
+])}
+🧠 \`Inteligencia\` : ${pickRandom(valores)}
+🤡 \`Nivel de Pendejez\` : ${pickRandom(valores)}
+🐢 \`Morosidad\` : ${pickRandom(valores)}
+🔥 \`Coraje\` : ${pickRandom(valores)}
+👻 \`Miedo\` : ${pickRandom(valores)}
+🌟 \`Fama\` : ${pickRandom(valores)}
+⚧️ \`Género\` : ${pickRandom([
+'Hombre',
+'Mujer',
+'Endoesqueleto sin disfraz',
+'Feminista poseída',
+'Hetero.exe',
+'Chico de la Mordida del 87',
+'No Binario pero con jumpscare',
+'BonnieSexual',
+'FoxyRomántico',
+'Género: Marioneta',
+'GlitchTrap Friendly',
+'Purple Guy™️',
+'FreddyFazSexual'
+])}`
 
-conn.reply(m.chat, personalidad, m)
-
+  conn.reply(m.chat, personalidad, m)
 }
+
 handler.help = ['personalidad']
 handler.tags = ['fun']
 handler.command = ['personalidad']
-handler.group = true;
+handler.group = true
 handler.register = true
 
 export default handler
 
 function pickRandom(list) {
-return list[Math.floor(Math.random() * list.length)]
+  return list[Math.floor(Math.random() * list.length)]
 }
+
+const valores = [
+  '0%', '1%', '2.9%', '6%', '12%', '20%', '27%',
+  '35%', '41%', '49%', '54%', '60%', '66%',
+  '73%', '78%', '84%', '92%', '93%', '94%',
+  '96%', '98.3%', '99.7%', '99.9%', '100%', '💀 Desconocido'
+]
