@@ -1,97 +1,119 @@
 const handler = (m) => m;
-handler.before = async function(m) {
-  this.suit = this.suit ? this.suit : {};
-  if (db.data.users[m.sender].suit < 0) db.data.users[m.sender].suit = 0;
-  const room = Object.values(this.suit).find((room) => room.id && room.status && [room.p, room.p2].includes(m.sender));
-  if (room) {
-    let win = '';
-    let tie = false;
-    if (m.sender == room.p2 && /^(acc(ept)?|terima|aceptar|gas|aceptare?|nao|gamau|rechazar|ga(k.)?bisa)/i.test(m.text) && m.isGroup && room.status == 'wait') {
-      if (/^(tolak|gamau|rechazar|ga(k.)?bisa)/i.test(m.text)) {
-        const textno = `${emoji2} @${room.p2.split`@`[0]} Rechazo el PVP, el juego se cancela.`;
-        m.reply(textno, null, {mentions: this.parseMention(textno)});
-        delete this.suit[room.id];
-        return !0;
-      }
-      room.status = 'play';
-      room.asal = m.chat;
-      clearTimeout(room.waktu);
-      const textplay = `🎮 Games - PVP - Games 🎮\n\n—◉ El juego comienza, laz opciones han sido enviadas a los chats privados de @${room.p.split`@`[0]} y @${room.p2.split`@`[0]}\n\n◉ Seleccionen una opcion en sus chats privados, respectivamente.\n*◉ Elegir opción en wa.me/${conn.user.jid.split`@`[0]}*`;
-      m.reply(textplay, m.chat, {mentions: this.parseMention(textplay)});
-      const comienzop = `${emoji} Por favor, seleccione una de las siguientes opciones:
-piedra
-papel
-tijera\nGanador +${room.poin}XP\nPerdedor ${room.poin_lose}XP\n*responda al mensaje con la opción que desea*
-*ejemplo: papel*`;
-      const comienzop2 = `${emoji} Por favor, seleccione una de las siguientes opciones:
-piedra
-papel
-tijera\nGanador +${room.poin}XP\nPerdedor ${room.poin_lose}XP\n*responda al mensaje con la opción que desea*
-*ejemplo: papel*`;
 
-      if (!room.pilih) this.sendMessage(room.p, {text: comienzop}, {quoted: m});
-      if (!room.pilih2) this.sendMessage(room.p2, {text: comienzop2}, {quoted: m});
-      room.waktu_milih = setTimeout(() => {
-        const iniciativa = `${emoji2} Ningún jugador tomo la iniciativa de empezar el juego, el PVP de ha cancelado.`;
-        if (!room.pilih && !room.pilih2) this.sendMessage(m.chat, {text: iniciativa}, {quoted: m});
-        else if (!room.pilih || !room.pilih2) {
-          win = !room.pilih ? room.p2 : room.p;
-          const textnull = `${emoji2} @${(room.pilih ? room.p2 : room.p).split`@`[0]} No elegiste ninguna opción, fin del PVP.`;
-          this.sendMessage(m.chat, {text: textnull}, {quoted: m}, {mentions: this.parseMention(textnull)});
-          db.data.users[win == room.p ? room.p : room.p2].exp += room.poin;
-          db.data.users[win == room.p ? room.p : room.p2].exp += room.poin_bot;
-          db.data.users[win == room.p ? room.p2 : room.p].exp -= room.poin_lose;
-        }
-        delete this.suit[room.id];
-        return !0;
-      }, room.timeout);
-    }
-    const jwb = m.sender == room.p;
-    const jwb2 = m.sender == room.p2;
-    const g = /tijera/i;
-    const b = /piedra/i;
-    const k = /papel/i;
-    const reg = /^(tijera|piedra|papel)/i;
-    if (jwb && reg.test(m.text) && !room.pilih && !m.isGroup) {
-      room.pilih = reg.exec(m.text.toLowerCase())[0];
-      room.text = m.text;
-      m.reply(`${emoji} Has elegido ${m.text}, regresa al grupo y ${room.pilih2 ? `Revisa los resultados` : 'Espera los resultados'}`);
-      if (!room.pilih2) this.reply(room.p2, `${emoji2} El oponente a elegido, es tu turno de elegir!!.`, 0);
-    }
-    if (jwb2 && reg.test(m.text) && !room.pilih2 && !m.isGroup) {
-      room.pilih2 = reg.exec(m.text.toLowerCase())[0];
-      room.text2 = m.text;
-      m.reply(`${emoji} Has elegido ${m.text}, regresa al grupo y ${room.pilih ? `Revisa los resultados` : 'Espera los resultados'}`);
-      if (!room.pilih) this.reply(room.p, `${emoji2} El oponente a elegido, es tu turno de elegir!!.`, 0);
-    }
-    const stage = room.pilih;
-    const stage2 = room.pilih2;
-    if (room.pilih && room.pilih2) {
-      clearTimeout(room.waktu_milih);
-      if (b.test(stage) && g.test(stage2)) win = room.p;
-      else if (b.test(stage) && k.test(stage2)) win = room.p2;
-      else if (g.test(stage) && k.test(stage2)) win = room.p;
-      else if (g.test(stage) && b.test(stage2)) win = room.p2;
-      else if (k.test(stage) && b.test(stage2)) win = room.p;
-      else if (k.test(stage) && g.test(stage2)) win = room.p2;
-      else if (stage == stage2) tie = true;
-      this.reply(room.asal, `
-*👑 Resultados del PVP 👑*${tie ? '\n*—◉ Empate!!*' : ''}
-*@${room.p.split`@`[0]} (${room.text})* ${tie ? '' : room.p == win ? ` *Gano 🥳 +${room.poin}XP*` : ` *Perdio 🤡 ${room.poin_lose}XP*`}
-*@${room.p2.split`@`[0]} (${room.text2})* ${tie ? '' : room.p2 == win ? ` *Gano 🥳 +${room.poin}XP*` : ` *Perdio 🤡 ${room.poin_lose}XP*`}
-`.trim(), m, {mentions: [room.p, room.p2]} );
-      if (!tie) {
-        db.data.users[win == room.p ? room.p : room.p2].exp += room.poin;
-        db.data.users[win == room.p ? room.p : room.p2].exp += room.poin_bot;
-        db.data.users[win == room.p ? room.p2 : room.p].exp += room.poin_lose;
-      }
+handler.before = async function (m) {
+  this.suit = this.suit || {};
+  if (db.data.users[m.sender].suit < 0) db.data.users[m.sender].suit = 0;
+
+  const room = Object.values(this.suit).find(r => r.id && r.status && [r.p, r.p2].includes(m.sender));
+  if (!room) return;
+
+  let win = '';
+  let tie = false;
+
+  if (
+    m.sender === room.p2 &&
+    /^(acc(ept)?|terima|aceptar|gas|aceptare?|nao|gamau|rechazar|ga(k.)?bisa)/i.test(m.text) &&
+    m.isGroup &&
+    room.status === 'wait'
+  ) {
+    if (/^(tolak|gamau|rechazar|ga(k.)?bisa)/i.test(m.text)) {
+      const cancelMsg = `❌ @${room.p2.split`@`[0]} rechazó el duelo. PVP cancelado.`;
+      m.reply(cancelMsg, null, { mentions: this.parseMention(cancelMsg) });
       delete this.suit[room.id];
+      return !0;
     }
+
+    room.status = 'play';
+    room.asal = m.chat;
+    clearTimeout(room.waktu);
+
+    const startMsg = `🎮 *PVP iniciado* 🎮\n\nSe han enviado las opciones a los chats privados de @${room.p.split`@`[0]} y @${room.p2.split`@`[0]}\n\n📩 *Elige piedra, papel o tijera en privado con el bot.*`;
+    m.reply(startMsg, m.chat, { mentions: this.parseMention(startMsg) });
+
+    const instruction = `🕹️ Elige una opción:\n- piedra\n- papel\n- tijera\n\n🧠 Responde con una de las opciones.\n🏆 Ganador: +${room.poin}XP\n😵 Perdedor: -${room.poin_lose}XP`;
+    this.sendMessage(room.p, { text: instruction }, { quoted: m });
+    this.sendMessage(room.p2, { text: instruction }, { quoted: m });
+
+    room.waktu_milih = setTimeout(() => {
+      let msg;
+      if (!room.pilih && !room.pilih2) {
+        msg = `⌛ Ningún jugador eligió. El PVP ha sido cancelado.`;
+      } else {
+        win = !room.pilih ? room.p2 : room.p;
+        const loser = win === room.p ? room.p2 : room.p;
+        msg = `⚠️ @${loser.split`@`[0]} no eligió a tiempo. PVP cancelado.`;
+        db.data.users[win].exp += room.poin + room.poin_bot;
+        db.data.users[loser].exp -= room.poin_lose;
+      }
+      this.sendMessage(m.chat, { text: msg }, { quoted: m, mentions: this.parseMention(msg) });
+      delete this.suit[room.id];
+    }, room.timeout);
+
+    return !0;
   }
-  return !0;
+
+  const isPlayer1 = m.sender === room.p;
+  const isPlayer2 = m.sender === room.p2;
+  const validOption = /^(piedra|papel|tijera)$/i;
+  const lower = (s) => s.toLowerCase();
+
+  if (isPlayer1 && validOption.test(m.text) && !room.pilih && !m.isGroup) {
+    room.pilih = lower(validOption.exec(m.text)[0]);
+    m.reply(`✅ Elegiste: *${room.pilih}*\nEspera el turno del oponente o vuelve al grupo.`);
+    if (!room.pilih2) this.reply(room.p2, `🎮 Tu oponente ya eligió. ¡Es tu turno!`, 0);
+    return !0;
+  }
+
+  if (isPlayer2 && validOption.test(m.text) && !room.pilih2 && !m.isGroup) {
+    room.pilih2 = lower(validOption.exec(m.text)[0]);
+    m.reply(`✅ Elegiste: *${room.pilih2}*\nEspera el turno del oponente o vuelve al grupo.`);
+    if (!room.pilih) this.reply(room.p, `🎮 Tu oponente ya eligió. ¡Es tu turno!`, 0);
+    return !0;
+  }
+
+  if (room.pilih && room.pilih2) {
+    clearTimeout(room.waktu_milih);
+
+    const p1 = room.pilih;
+    const p2 = room.pilih2;
+
+    // lógica para determinar el ganador
+    if (p1 === p2) {
+      tie = true;
+    } else if (
+      (p1 === 'piedra' && p2 === 'tijera') ||
+      (p1 === 'tijera' && p2 === 'papel') ||
+      (p1 === 'papel' && p2 === 'piedra')
+    ) {
+      win = room.p;
+    } else {
+      win = room.p2;
+    }
+
+    const resultMsg = `
+*⚔️ RESULTADOS DEL PVP ⚔️*${tie ? '\n🤝 ¡Empate!' : ''}
+👤 @${room.p.split`@`[0]} eligió: *${room.pilih}* ${tie ? '' : win === room.p ? `🏆 *Ganó +${room.poin}XP*` : `❌ *Perdió -${room.poin_lose}XP*`}
+👤 @${room.p2.split`@`[0]} eligió: *${room.pilih2}* ${tie ? '' : win === room.p2 ? `🏆 *Ganó +${room.poin}XP*` : `❌ *Perdió -${room.poin_lose}XP*`}
+`.trim();
+
+    this.reply(room.asal, resultMsg, m, { mentions: [room.p, room.p2] });
+
+    if (!tie) {
+      db.data.users[win].exp += room.poin + room.poin_bot;
+      const loser = win === room.p ? room.p2 : room.p;
+      db.data.users[loser].exp -= room.poin_lose;
+    }
+
+    delete this.suit[room.id];
+    return !0;
+  }
+
+  return !1;
 };
+
 handler.exp = 0;
 export default handler;
+
 function random(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
