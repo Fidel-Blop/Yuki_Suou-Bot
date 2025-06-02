@@ -1,57 +1,68 @@
 const { generateWAMessageFromContent, proto } = (await import('@whiskeysockets/baileys')).default
 
-var handler = async (m, { conn, text}) => {
+var handler = async (m, { conn, text }) => {
+    const emojiFnaf = '👹'; // algo creepy, estilo FNaF LATAM
+    const loadingMsg = `${emojiFnaf} Buscando un oscuro y misterioso facto... No te desconectes, esto va a dar miedo.`;
+    
+    await conn.reply(m.chat, loadingMsg, m);
+    
+    let facto = pickRandom(global.factos);
+    
+    let message = 
+`*┏━━━━┓*
+┃ ${emojiFnaf}  *Dato aterrador*  ${emojiFnaf} ┃
+*┗━━━┛*
 
-conn.reply(m.chat, `${emoji2} Buscando un facto, espere un momento...`, m)
+*❥ "${facto}"*
 
-conn.reply(m.chat, `*┏━_͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡_͜͡━┓*\n\n❥ *"${pickRandom(global.factos)}"*\n\n*┗━_͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡_͜͡━┛*`, m)
+*¿Te atreves a compartirlo?* 🖤🦇`;
 
+    conn.reply(m.chat, message, m);
 }
-handler.help = ['facto']
-handler.tags = ['fun']
-handler.command = ['facto']
-handler.fail = null
-handler.exp = 0
+
+handler.help = ['facto'];
+handler.tags = ['fun', 'fnaf'];
+handler.command = ['facto', 'factos'];
+handler.fail = null;
+handler.exp = 5; // que dé más experiencia porque es cool
 handler.group = true;
-handler.register = true
+handler.register = true;
 
-export default handler
+export default handler;
 
-let hasil = Math.floor(Math.random() * 5000)
 function pickRandom(list) {
-return list[Math.floor(list.length * Math.random())]
+    return list[Math.floor(Math.random() * list.length)];
 }
 
 global.factos = [
-    "Eres la razón por la que hay instrucciones en los champús.",
-    "Si fueras un libro, serías el que nadie quiere leer.",
-    "Tu vida es como un programa de televisión que nadie ve.",
-    "Eres como un error tipográfico: solo estás ahí para arruinarlo todo.",
-    "Si fueras un producto, serías el que está en oferta porque no se vende.",
-    "Eres un recordatorio de lo que no se debe hacer en la vida.",
-    "Tu existencia es tan relevante como un archivo en la papelera de reciclaje.",
-    "Si fueras un plato, serías uno que nadie quiere probar.",
-    "Eres la razón por la que los hombres tienen miedo de comprometerse.",
-    "Tu personalidad es como un antivirus: nadie lo quiere instalar.",
-    "Eres la prueba de que la selección natural puede fallar.",
-    "Si fueras un color, serías el gris: aburrido y sin vida.",
-    "Tu vida es como una mala película: nadie quiere ver el final.",
-    "Eres como un mal chiste: siempre haces que la gente se sienta incómoda.",
-    "Si fueras un animal, serías la mascota que nadie quiere adoptar.",
-    "Tu sentido del humor es como un mal Wi-Fi: no tiene conexión.",
-    "Eres como una planta marchita: solo ocupas espacio.",
-    "Si fueras un virus informático, serías uno que causa más problemas que soluciones.",
-    "Tu imagen es la razón por la que los espejos están cubiertos.",
-    "Eres el ejemplo perfecto de cómo no vivir la vida.",
-    "Si fueras un día de la semana, serías un lunes: todos te odian.",
-    "Eres la razón por la que las personas no creen en el amor verdadero.",
-    "Tu vida es un meme, pero nadie se ríe.",
-    "Si fueras una aplicación, serías una que nadie quiere descargar.",
-    "Eres como una sombra: siempre estás ahí, pero no eres bienvenido.",
-    "Tu cerebro es como un disco duro lleno: no puede almacenar más.",
-    "Eres como un tren descarrilado: solo causan caos.",
-    "Si fueras un clima, serías una tormenta: oscuro y destructivo.",
-    "Eres como una cadena de mensajes: nadie te quiere, pero todos te reciben.",
-    "Tu vida es como un rompecabezas con piezas que nunca encajan.",
-    "Si fueras una película, serías una secuela que nadie pidió."
+    "¿Sabías que en la oscuridad siempre hay alguien observando? No eres tan solo tú.",
+    "Los animatrónicos no solo bailan, también vigilan tus movimientos.",
+    "Cada noche en FNaF, un misterio más se suma a la leyenda.",
+    "Si escuchas un crujido, no es el viento... es algo que no quiere que descubras.",
+    "El lugar más seguro es aquel donde nadie entra... ni siquiera la muerte.",
+    "Los fantasmas no pueden mentir, pero sí pueden jugar contigo.",
+    "Dicen que cada vez que apagas la luz, una historia oscura comienza a contarse.",
+    "Los datos que compartes pueden volverse en tu contra. Ten cuidado con lo que dices.",
+    "El miedo es solo el primer paso para descubrir la verdad oculta.",
+    "Un simple hecho puede convertirse en una pesadilla, si sabes dónde mirar.",
+    "¿Crees que estás solo? Eso es justo lo que quieren que pienses.",
+    "A veces, los hechos más aterradores están escondidos a plena vista.",
+    "Si tus datos fueran un animatrónico, ¿qué tan peligroso sería?",
+    "Cada secreto tiene un precio, y la verdad no siempre es gratis.",
+    "Los archivos olvidados son los que guardan los horrores más grandes.",
+    "El silencio es el peor ruido cuando estás atrapado en la oscuridad.",
+    "Los errores no desaparecen, solo cambian de forma y esperan.",
+    "Si una leyenda urbana te da miedo, imagina lo que no has visto aún.",
+    "Los datos perdidos pueden regresar para cobrar su deuda.",
+    "Nunca subestimes el poder de un dato escondido en las sombras.",
+    "Lo que no se dice puede ser más terrorífico que lo que se grita.",
+    "El próximo dato que leas puede cambiar tu destino... o terminarlo.",
+    "Las sombras en las cámaras no siempre son fallos técnicos.",
+    "Cada misterio tiene su guardián... y algunos son más letales que otros.",
+    "El miedo es un dato que todos compartimos, pero pocos aceptan.",
+    "En FNaF LATAM, los hechos no solo asustan, también te marcan para siempre.",
+    "Recuerda, hasta los datos tienen secretos oscuros que nadie quiere contar.",
+    "Cuando apagues tu dispositivo, alguien más puede estar encendiendo el suyo.",
+    "La verdad puede doler, pero la ignorancia es peor.",
+    "El dato que buscas podría estar justo detrás de ti... o bajo tu cama."
 ];
