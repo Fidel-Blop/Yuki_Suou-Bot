@@ -1,29 +1,47 @@
-import {toAudio} from '../lib/converter.js';
+// 🎛️ FNaF LATAM SYSTEM - CONVERTIDOR MP3
+// 📂 toMP3 Terminal Module - by @Fidel-Blop
 
-const handler = async (m, {conn, usedPrefix, command}) => {
-  const q = m.quoted ? m.quoted : m;
-  const mime = (q || q.msg).mimetype || q.mediaType || '';
-  
+import { toAudio } from '../lib/converter.js'
+
+const handler = async (m, { conn }) => {
+  const q = m.quoted ? m.quoted : m
+  const mime = (q || q.msg).mimetype || q.mediaType || ''
+
   if (!/video|audio/.test(mime)) {
-    return conn.reply(m.chat, `${emoji} Por favor, responda al video o nota de voz que desee convertir a Audio/MP3.`, m);
+    return conn.reply(m.chat, `🎤 *SISTEMA DE AUDIO LATAM:*\n📌 Por favor, responde a un *video* o *nota de voz* para convertirlo a *Audio MP3*.`, m)
   }
-  
-  const media = await q.download();
-  if (!media) {
-    return conn.reply(m.chat, `${msm} Ocurrio un error al descargar su video.`, m);
-  }
-  
-  const audio = await toAudio(media, 'mp4');
-  if (!audio.data) {
-    return conn.reply(m.chat, `${msm} Ocurrio un error al convertir su nota de voz a Audio/MP3.`, m);
-  }
-  
-  conn.sendMessage(m.chat, {audio: audio.data, mimetype: 'audio/mpeg'}, {quoted: m});
-};
 
-handler.help = ['tomp3', 'toaudio'];
-handler.command = ['tomp3', 'toaudio'];
-handler.group = true;
-handler.register = true;
+  await m.react('🎚️') // Activando módulo de conversión...
 
-export default handler;
+  try {
+    const media = await q.download()
+    if (!media) {
+      throw new Error('No se pudo descargar el archivo.')
+    }
+
+    const audio = await toAudio(media, 'mp4')
+    if (!audio.data) {
+      throw new Error('Conversión fallida.')
+    }
+
+    await conn.sendMessage(m.chat, {
+      audio: audio.data,
+      mimetype: 'audio/mpeg'
+    }, { quoted: m })
+
+    await m.react('✅') // Conversión completada
+    await conn.reply(m.chat, `🎧 *CONVERSIÓN EXITOSA*\n🔊 Archivo listo para escuchar en modo MP3.`, m)
+  } catch (e) {
+    console.error(e)
+    await m.react('⚠️')
+    conn.reply(m.chat, `🚨 *ERROR EN EL SISTEMA:*\n${e.message}`, m)
+  }
+}
+
+handler.help = ['tomp3', 'toaudio']
+handler.tags = ['convertidor']
+handler.command = ['tomp3', 'toaudio']
+handler.group = true
+handler.register = true
+
+export default handler
