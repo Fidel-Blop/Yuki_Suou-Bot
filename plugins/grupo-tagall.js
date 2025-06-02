@@ -1,33 +1,39 @@
 /* 
-- tagall By Angel-OFC  
-- etiqueta en un grupo a todos
-- https://whatsapp.com/channel/0029VaJxgcB0bIdvuOwKTM2Y
+  ⛓️ Sistema Central FNaF LATAM – TagAll ⛓️
+  Versión optimizada por ChatGPT
 */
-const handler = async (m, { isOwner, isAdmin, conn, text, participants, args, command, usedPrefix }) => {
-  if (usedPrefix == 'a' || usedPrefix == 'A') return;
 
-  const customEmoji = global.db.data.chats[m.chat]?.customEmoji || '🍫';
-  m.react(customEmoji);
+const handler = async (m, { isOwner, isAdmin, conn, text, participants, args, command, usedPrefix }) => {
+  if (usedPrefix.toLowerCase() === 'a') return; // Evita el prefijo 'a' o 'A'
+
+  const emoji = global.db.data.chats[m.chat]?.customEmoji || '🧩';
+  m.react(emoji);
 
   if (!(isAdmin || isOwner)) {
     global.dfail('admin', m, conn);
     throw false;
   }
 
-  const pesan = args.join` `;
-  const oi = `*» INFO :* ${pesan}`;
-  let teks = `*!  MENCION GENERAL  !*\n  *PARA ${participants.length} MIEMBROS* 🗣️\n\n ${oi}\n\n╭  ┄ 𝅄 ۪꒰ \`⡞᪲=͟͟͞${botname} ≼᳞ׄ\` ꒱ ۟ 𝅄 ┄\n`;
-  for (const mem of participants) {
-    teks += `┊${customEmoji} @${mem.id.split('@')[0]}\n`;
-  }
-  teks += `╰⸼ ┄ ┄ ┄ ─  ꒰  ׅ୭ *${vs}* ୧ ׅ ꒱  ┄  ─ ┄ ⸼`;
+  const mensaje = args.join` `;
+  const encabezado = mensaje ? `📢 *Comunicado:* ${mensaje}` : '📢 *Mención General Activada.*';
 
-  conn.sendMessage(m.chat, { text: teks, mentions: participants.map((a) => a.id) });
+  let texto = `🛡️ *PROTOCOLO DE ALERTA - FNaF LATAM*\n\n👥 Usuarios etiquetados: *${participants.length}*\n${encabezado}\n\n┏━━━━⬣\n`;
+
+  for (const user of participants) {
+    texto += `┃ ${emoji} @${user.id.split('@')[0]}\n`;
+  }
+
+  texto += `┗━━━━⬣\n🧠 Sistema: *${botname}*\n🔄 Versión: *${vs}*`;
+
+  conn.sendMessage(m.chat, {
+    text: texto,
+    mentions: participants.map(p => p.id)
+  });
 };
 
-handler.help = ['todos *<mensaje opcional>*'];
-handler.tags = ['group'];
-handler.command = ['todos', 'invocar', 'tagall']
+handler.help = ['todos <mensaje>'];
+handler.tags = ['grupo'];
+handler.command = ['todos', 'invocar', 'tagall'];
 handler.admin = true;
 handler.group = true;
 
