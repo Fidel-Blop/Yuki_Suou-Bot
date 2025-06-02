@@ -1,8 +1,12 @@
-import { performance } from 'perf_hooks'
+import { performance } from 'perf_hooks';
+
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+function pickRandom(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
 
 var handler = async (m, { conn, text }) => {
-    let who;
-    let userName;
+    let who, userName;
 
     if (m.isGroup) {
         if (m.mentionedJid.length > 0) {
@@ -18,79 +22,61 @@ var handler = async (m, { conn, text }) => {
         who = m.chat;
     }
 
-    if (!who) return conn.reply(m.chat, `${emoji} Por favor, ingrese el tag de algún usuario o responda a un mensaje.`, m);
+    if (!who) return conn.reply(m.chat, '⚠️ Necesito que etiquetes o respondas a alguien para rastrear su señal 👾', m);
+    if (!userName) userName = text || 'Sujeto Desconocido';
 
-    if (!userName) {
-        userName = text || 'Usuario desconocido';
+    const status = [
+        '*🔍 Localizando conexión...',
+        '*📡 Rastreando IP interna...',
+        '*💀 Accediendo al puerto 443...',
+        '*📁 Analizando metadatos...',
+        '*👤 Perfil encontrado...*'
+    ];
+
+    const boost = [
+        '*0%*','*12%*','*27%*','*39%*','*58%*',
+        '*67%*','*73%*','*88%*','*96%*','*100%*'
+    ];
+
+    const { key } = await conn.sendMessage(m.chat, { text: '📡 *Iniciando protocolo FNaF-DOX*...' }, { quoted: m });
+    for (let i = 0; i < status.length; i++) {
+        await delay(1000);
+        await conn.sendMessage(m.chat, { text: `${status[i]}\nProgreso: ${boost[i]}`, edit: key });
     }
 
-    let start = `🧑‍💻 *Iniciando doxeo*...`;
-    let boost = `*${pickRandom(['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'])}%*`;
-    let boost2 = `*${pickRandom(['21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40'])}%*`;
-    let boost3 = `*${pickRandom(['41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59','60'])}%*`;
-    let boost4 = `*${pickRandom(['61','62','63','64','65','66','67','68','69','70','71','72','73','74','75','76','77','78','79','80'])}%*`;
-    let boost5 = `*${pickRandom(['81','82','83','84','85','86','87','88','89','90','91','92','93','94','95','96','97','98','99','100'])}%*`;
+    let t1 = performance.now();
+    let t2 = performance.now();
+    let velocidad = (t2 - t1).toFixed(2);
 
-    const { key } = await conn.sendMessage(m.chat, { text: `${start}` }, { quoted: m });
-    await delay(1000);
-    await conn.sendMessage(m.chat, { text: `${boost}`, edit: key });
-    await delay(1000);
-    await conn.sendMessage(m.chat, { text: `${boost2}`, edit: key });
-    await delay(1000);
-    await conn.sendMessage(m.chat, { text: `${boost3}`, edit: key });
-    await delay(1000);
-    await conn.sendMessage(m.chat, { text: `${boost4}`, edit: key });
-    await delay(1000);
-    await conn.sendMessage(m.chat, { text: `${boost5}`, edit: key });
+    let result = `🎮 *FNaF LATAM | Dox Completo*
 
-    let old = performance.now();
-    let neww = performance.now();
-    let speed = `${neww - old}`;
-    let doxeo = `👤 *Persona doxeada* 
+📦 [ DATOS ADQUIRIDOS ] 📦
+━━━━━━━━━━━━━━━━━━━━━
+👤 *Objetivo:* ${userName}
+🌐 *IP:* 198.51.100.${Math.floor(Math.random()*255)}
+🛰️ *Servidor Proxy:* Freddy-Net v4.1
+🔍 *Ubicación Estimada:* Basement, Freddy Fazbear’s Pizza
+📡 *MAC (spoofed):* 00:1B:44:11:3A:B7
+💾 *S.O. Detectado:* Windows Fazbear Edition
+💻 *Navegador:* Tor Browser (versión modificada)
+🌍 *ISP:* Fazbear Wireless Communications
+🎭 *VPN:* GlitchyGhostVPN
+🎮 *Dispositivo:* FazCam XT-02
+📶 *Tipo de Red:* Ethernet Poseída
+🕷️ *Amenaza detectada:* Shadow Bonnie sniffing packets
+🕒 *Ping en red:* ${Math.floor(Math.random() * 200)} ms
+⚠️ *Velocidad de escaneo:* ${velocidad} ms
+📁 *Archivos expuestos:* system32\\fazcam_config.dll
+🔐 *Puertos abiertos:* 666, 1987, 1983
+🦾 *Sistema anti-rastreo:* ACTIVADO (bypass exitoso)
+🛑 *Firewall:* Desactivado por Springtrap.exe
+🌑 *Ultimo acceso:* 03:00 AM
+━━━━━━━━━━━━━━━━━━━━━
+👁️ *Observación:* Sujeto vinculado a la *Zona Segura #7* de la Pizzería. Precaución al interactuar.
+📸 *Camara de vigilancia activada.* Posible interferencia de *Marionette*.
+`;
 
-📅 ${new Date().toLocaleDateString()}
-⏰ ${new Date().toLocaleTimeString()}
-
-📢 Resultados:
-
-*Nombre:* ${userName}
-*Ip:* 92.28.211.234
-*N:* 43 7462
-*W:* 12.4893
-*SS NUMBER:* 6979191519182016
-*IPV6:* fe80::5dcd::ef69::fb22::d9888%12 
-*UPNP:* Enabled
-*DMZ:* 10.112.42.15
-*MAC:* 5A:78:3E:7E:00
-*ISP:* Ucom universal 
-*DNS:* 8.8.8.8
-*ALT DNS:* 1.1.1.1 
-*DNS SUFFIX:* Dlink
-*WAN:* 100.23.10.15
-*WAN TYPE:* private nat
-*GATEWAY:* 192.168.0.1
-*SUBNET MASK:* 255.255.0.255
-*UDP OPEN PORTS:* 8080, 80
-*TCP OPEN PORTS:* 443
-*ROUTER VENDEDOR:* ERICCSON
-*DEVICE VENDEDOR:* WIN32-X
-*CONNECTION TYPE:* TPLINK COMPANY
-*ICMPHOPS:* 192.168.0.1, 192.168.1.1, 100.73.43.4
-host-132.12.32.167.ucom.com
-host-132.12.111.ucom.com
-36.134.67.189, 216.239.78.11
-Sof02s32inf14.1e100.net
-*HTTP:* 192.168.3.1:433-->92.28.211.234:80
-*Http:* 192.168.625-->92.28.211.455:80
-*Http:* 192.168.817-->92.28.211.8:971
-*Upd:* 192.168.452-->92.28.211:7265288
-*Tcp:* 192.168.682-->92.28.211:62227.7
-*Tcp:* 192.168.725-->92.28.211:67wu2
-*Tcp:* 192.168.629-->92.28.211.167:8615
-*EXTERNAL MAC:* 6U:77:89:ER:O4
-*MODEM JUMPS:* 64`;
-
-    m.reply(doxeo, null, { mentions: conn.parseMention(doxeo) });
+    m.reply(result, null, { mentions: conn.parseMention(result) });
 }
 
 handler.help = ['doxear'];
@@ -100,9 +86,3 @@ handler.register = true;
 handler.group = true;
 
 export default handler;
-
-function pickRandom(list) {
-    return list[Math.floor(Math.random() * list.length)];
-}
-
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
