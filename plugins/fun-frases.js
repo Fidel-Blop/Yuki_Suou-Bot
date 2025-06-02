@@ -1,63 +1,56 @@
-const { generateWAMessageFromContent, proto } = (await import('@whiskeysockets/baileys')).default
+const { generateWAMessageFromContent, proto } = (await import('@whiskeysockets/baileys')).default;
 
-var handler = async (m, { conn, text}) => {
+var handler = async (m, { conn }) => {
+  const frasesFnafLatam = global.frases_fnaf_latam;
+  const frase = pickRandom(frasesFnafLatam);
 
-conn.reply(m.chat, `${emoji2} Buscando una frase, espere un momento...`, m)
+  await conn.reply(m.chat, '🔍 Buscando en los archivos malditos... espere unos segundos. 📂👁️', m);
 
-conn.reply(m.chat, `*┏━_͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡_͜͡━┓*\n\n❥ *"${pickRandom(global.frases)}"*\n\n*┗━_͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡_͜͡━┛*`, m)
+  await conn.reply(
+    m.chat,
+    `*🎭 Frase desde la oscuridad de FNaF LATAM:*\n\n➤ ❝ *${frase}* ❞\n\n🎮 ¿Será una pista... o solo una advertencia? 👀`,
+    m
+  );
+};
 
-}
-handler.help = ['frase']
-handler.tags = ['fun']
-handler.command = ['frase']
-handler.fail = null
-handler.exp = 0
+handler.help = ['frase'];
+handler.tags = ['fun', 'fnaf'];
+handler.command = ['frase', 'frases'];
+handler.fail = null;
+handler.exp = 0;
 handler.group = true;
-handler.register = true
+handler.register = true;
 
-export default handler
+export default handler;
 
-let hasil = Math.floor(Math.random() * 5000)
 function pickRandom(list) {
-return list[Math.floor(list.length * Math.random())]
+  return list[Math.floor(list.length * Math.random())];
 }
 
-global.frases = [
-    "Recuerda que no puedes fallar en ser tú mismo (Wayne Dyer)",
-    "Siempre es temprano para rendirse (Jorge Álvarez Camacho)",
-    "Sólo una cosa convierte en imposible un sueño: el miedo a fracasar (Paulo Coelho)",
-    "Lo que haces hoy puede mejorar todos tus mañanas (Ralph Marston)",
-    "Cáete siete veces y levántate ocho (Proverbio japonés)",
-    "Nada sucede hasta que algo se mueve (Albert Einstein)",
-    "La felicidad está escondida en la sala de espera de la felicidad (Eduard Punset)",
-    "El verdadero buscador crece y aprende, y descubre que siempre es el principal responsable de lo que sucede (Jorge Bucay)",
-    "La vida comienza al final de la zona de confort (Neale Donald Walsch)",
-    "La confianza en sí mismo es el primer secreto del éxito (Ralph Waldo Emerson)",
-    "No hay camino para la paz, la paz es el camino. (Mahatma Gandhi)",
-    "La vida es lo que pasa mientras estás ocupado haciendo otros planes. (John Lennon)",
-    "La vida es un 10% lo que me ocurre y un 90% cómo reacciono a ello. (Charles R. Swindoll)",
-    "El único modo de hacer un gran trabajo es amar lo que haces. (Steve Jobs)",
-    "No importa qué tan lento vayas, siempre y cuando no te detengas. (Confucio)",
-    "No te preocupes si no tienes éxito, siempre puedes ser un buen ejemplo de cómo no hacerlo.",
-    "La única razón por la que estoy en forma es porque redondeo.",
-    "Soy multitarea: puedo procrastinar, ignorar y olvidarme al mismo tiempo.",
-    "Si la vida te da limones, pide sal y tequila.",
-    "La risa es la distancia más corta entre dos personas.",
-    "No soy un completo inútil, al menos sirvo de mal ejemplo.",
-    "A veces la mayor aventura es simplemente un acto de valentía.",
-    "Soy vago, pero no me gusta que digan que soy perezoso.",
-    "Si no puedes convencerlos, confúndelos.",
-    "La vida es corta, haz que cuente.",
-    "La vida es una comedia escrita por un dramaturgo que es un poco sordo.",
-    "Hazlo o no lo hagas, pero no lo intentes.",
-    "La felicidad no es un destino, es una forma de viajar. (Margaret Lee Runbeck)",
-    "El tiempo vuela, pero yo soy el piloto.",
-    "No soy vago, estoy en modo de ahorro de energía.",
-    "La vida es como montar en bicicleta. Para mantener el equilibrio, debes seguir adelante. (Albert Einstein)",
-    "Nunca discutas con un tonto, te arrastrará a su nivel y te ganará por experiencia.",
-    "Ayer era la fecha límite para todos mis problemas.",
-    "La única forma de hacer un gran trabajo es amar lo que haces. (Steve Jobs)",
-    "La vida es un reto, enfréntalo.",
-    "Si no tienes un plan, estás planeando fracasar.",
-    "La vida es una aventura, atrévete a vivirla."
+global.frases_fnaf_latam = [
+  "A veces, el silencio en la pizzería dice más que mil gritos.",
+  "No todos los que brillan están vivos.",
+  "Ser valiente no significa no tener miedo... sino avanzar con él.",
+  "Detrás de cada máscara, hay un alma rota.",
+  "Los animatrónicos no descansan... y tú tampoco deberías.",
+  "Recuerda... no estás solo en esta sala.",
+  "La oscuridad es hogar para los que saben observar.",
+  "El tiempo avanza... y ellos también.",
+  "La noche es larga, pero tu cordura es corta.",
+  "Las cámaras no capturan lo que no quiere ser visto.",
+  "Respira hondo... puede ser la última vez.",
+  "La puerta no siempre te protegerá.",
+  "¿Y si el monstruo siempre fuiste tú?",
+  "Ellos te observan... incluso cuando crees que dormitan.",
+  "Cinco noches parecen poco... hasta que las vives.",
+  "Entre risas metálicas, se esconde la tragedia.",
+  "Los turnos nocturnos revelan más que lo que ocultan.",
+  "Te advertimos... pero decidiste aceptar el trabajo.",
+  "A veces el horror no es paranormal... es mecánico.",
+  "La pizzería guarda secretos que no deben contarse.",
+  "Ellos recuerdan... incluso si tú no lo haces.",
+  "Cada movimiento tuyo es una nota más en su sinfonía del miedo.",
+  "Escucha atentamente... ¿lo oyes caminar?",
+  "La muerte aquí no siempre es el final.",
+  "No es un juego... es una maldición con música de fondo.",
 ];
