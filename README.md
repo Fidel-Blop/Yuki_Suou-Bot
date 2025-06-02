@@ -17,28 +17,6 @@ Este bot está diseñado especialmente para los fanáticos de **Five Nights at F
 
 ---
 
-## 📥 Instalación
-
-1. Clona este repositorio:
-   ```bash
-   git clone https://github.com/TU-USER/FNaF-LATAM-Bot.git
-   cd FNaF-LATAM-Bot
-
-2. Instala las dependencias necesarias:
-
-npm install
-
-
-3. Configura tu archivo .env con tus credenciales y parámetros del bot.
-
-
-4. Ejecuta el bot:
-
-npm start
-
-
----
-
 📢 Grupos y Comunidad FNaF LATAM
 
 Únete a la comunidad oficial para compartir partidas, noticias y más:
