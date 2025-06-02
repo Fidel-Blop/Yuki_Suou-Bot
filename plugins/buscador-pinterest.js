@@ -1,4 +1,5 @@
 /*
+• @FNaF LATAM Adaptación
 • @David-Chian
 - https://github.com/David-Chian
 */
@@ -7,8 +8,8 @@ import fetch from 'node-fetch';
 import baileys from '@whiskeysockets/baileys';
 
 async function sendAlbumMessage(jid, medias, options = {}) {
-    if (typeof jid !== "string") throw new TypeError(`jid must be string, received: ${jid}`);
-    if (medias.length < 2) throw new RangeError("Se necesitan al menos 2 imágenes para un álbum");
+    if (typeof jid !== "string") throw new TypeError(`jid must be string, received: ${typeof jid}`);
+    if (!Array.isArray(medias) || medias.length < 2) throw new RangeError("🔴 Se necesitan al menos 2 imágenes para enviar un álbum.");
 
     const caption = options.text || options.caption || "";
     const delay = !isNaN(options.delay) ? options.delay : 500;
@@ -37,52 +38,9 @@ async function sendAlbumMessage(jid, medias, options = {}) {
         await conn.relayMessage(img.key.remoteJid, img.message, { messageId: img.key.id });
         await baileys.delay(delay);
     }
+
     return album;
 }
 
-const pinterest = async (m, { conn, text, usedPrefix, command }) => {
-    if (!text) return conn.reply(m.chat, `❀ Por favor, ingresa lo que deseas buscar por Pinterest.`, m);
-
-    await m.react('🕒');
-    conn.reply(m.chat, '✧ *Descargando imágenes de Pinterest...*', m, {
-        contextInfo: {
-            externalAdReply: {
-                mediaUrl: null,
-                mediaType: 1,
-                showAdAttribution: true,
-                title: packname,
-                body: dev,
-                previewType: 0,
-                thumbnail: icono,
-                sourceUrl: redes
-            }
-        }
-    });
-
-    try {
-        const res = await fetch(`https://api.dorratz.com/v2/pinterest?q=${encodeURIComponent(text)}`);
-        const data = await res.json();
-
-        if (!Array.isArray(data) || data.length < 2) {
-            return conn.reply(m.chat, '✧ No se encontraron suficientes imágenes para un álbum.', m);
-        }
-
-        const images = data.slice(0, 10).map(img => ({ type: "image", data: { url: img.image_large_url } }));
-
-        const caption = `❀ *Resultados de búsqueda para:* ${text}`;
-        await sendAlbumMessage(m.chat, images, { caption, quoted: m });
-
-        await m.react('✅');
-    } catch (error) {
-        await m.react('❌');
-        conn.reply(m.chat, '⚠︎ Hubo un error al obtener las imágenes de Pinterest.', m);
-    }
-};
-
-pinterest.help = ['pinterest <query>'];
-pinterest.tags = ['buscador', 'descargas'];
-pinterest.command = ['pinterest', 'pin']
-pinterest.register = true;
-pinterest.group = true;
-
-export default pinterest;
+const pinterest = async (m, { conn, text }) => {
+    if (!text) return conn.reply(m.chat, '🖼️ *¿Qué imagen deseas buscar en Pinterest?*\n\n
