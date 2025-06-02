@@ -1,19 +1,37 @@
-let handler = async (m, { conn, usedPrefix, command }) => {
+let handler = async (m, { conn }) => {
+  if (!m.quoted) {
+    return conn.reply(m.chat, '🛑 *Error de protocolo:* Debes *citar* el mensaje que deseas eliminar.\n\n🎮 *Sistema de Seguridad - FNaF LATAM*', m);
+  }
 
-if (!m.quoted) return conn.reply(m.chat, `${emoji} Por favor, cita el mensaje que deseas eliminar.`, m)
-try {
-let delet = m.message.extendedTextMessage.contextInfo.participant
-let bang = m.message.extendedTextMessage.contextInfo.stanzaId
-return conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }})
-} catch {
-return conn.sendMessage(m.chat, { delete: m.quoted.vM.key })
-}}
+  try {
+    const targetUser = m.message.extendedTextMessage.contextInfo.participant;
+    const targetMsgID = m.message.extendedTextMessage.contextInfo.stanzaId;
 
-handler.help = ['delete']
-handler.tags = ['grupo']
-handler.command = ['del','delete']
-handler.group = false
-handler.admin = true
-handler.botAdmin = true
+    return await conn.sendMessage(m.chat, {
+      delete: {
+        remoteJid: m.chat,
+        fromMe: false,
+        id: targetMsgID,
+        participant: targetUser
+      }
+    });
+  } catch (error) {
+    // Intenta borrar como fallback si el método principal falla
+    try {
+      return await conn.sendMessage(m.chat, {
+        delete: m.quoted.vM.key
+      });
+    } catch (err) {
+      return conn.reply(m.chat, '⚠️ *Falló la operación de borrado.*\nEs posible que no tengas permisos suficientes o que el mensaje ya no exista.\n\n🔐 *Sistema de Seguridad - FNaF LATAM*', m);
+    }
+  }
+};
 
-export default handler
+handler.help = ['delete'];
+handler.tags = ['grupo'];
+handler.command = ['del', 'delete'];
+handler.group = false; // Puede usarse también en privado si lo deseas cambiar
+handler.admin = true;
+handler.botAdmin = true;
+
+export default handler;
