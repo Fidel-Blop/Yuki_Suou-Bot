@@ -27,10 +27,10 @@ export async function before(m) {
   const move = !isSurrender ? room.game.turn(m.sender === room.game.playerO, parseInt(m.text) - 1) : null;
   if (!isSurrender && move < 1) {
     m.reply({
-      '-3': '❌ El juego ya ha terminado.',
-      '-2': '❌ Movimiento inválido.',
-      '-1': '❌ Posición inválida.',
-      '0': '❌ Posición inválida.'
+      '-3': '❌ El juego ya terminó, no te quedes pegado en el pasado.',
+      '-2': '❌ Movimiento inválido, ¿en serio intentas eso?',
+      '-1': '❌ Posición inválida, mejor elige bien tu jugada.',
+      '0':  '❌ Posición inválida, no puedes poner ahí.'
     }[move]);
     return true;
   }
@@ -52,24 +52,24 @@ export async function before(m) {
 
   const winner = isSurrender ? room.game.currentTurn : room.game.winner;
   const str = `
-🎮 *TRES EN RAYA* 🎮
+🔥 *TRES EN RAYA - FNaF LATAM Edition* 🔥
 
-❎ = @${room.game.playerX.split('@')[0]}
-⭕ = @${room.game.playerO.split('@')[0]}
+❎ @${room.game.playerX.split('@')[0]} VS ⭕ @${room.game.playerO.split('@')[0]}
 
-    ${boardVisual.slice(0, 3).join('')}
-    ${boardVisual.slice(3, 6).join('')}
-    ${boardVisual.slice(6).join('')}
+    ${boardVisual.slice(0, 3).join(' ')}
+    ${boardVisual.slice(3, 6).join(' ')}
+    ${boardVisual.slice(6).join(' ')}
 
 ${isWin
-  ? `🏆 @${winner.split('@')[0]} ganó y recibe +${winScore} XP 🥳`
+  ? `🏆 *¡Victoria brutal!* @${winner.split('@')[0]} se lleva +${winScore} XP 🎉`
   : isTie
-  ? '🤝 El juego terminó en empate.'
-  : `🎯 Turno de @${room.game.currentTurn.split('@')[0]}`}
-`.trim();
+  ? '🤝 El juego terminó en empate... pero la próxima será tuya.'
+  : `⚔️ Turno de @${room.game.currentTurn.split('@')[0]} — ¡Haz tu jugada y demuestra quién manda!`
+}`.trim();
 
   const users = global.db.data.users;
 
+  // Ajuste para enviar mensajes en el chat correcto
   if ((room.game._currentTurn ^ isSurrender ? room.x : room.o) !== m.chat) {
     room[room.game._currentTurn ^ isSurrender ? 'x' : 'o'] = m.chat;
   }
