@@ -1,5 +1,7 @@
 let handler = async (m, { conn, args, participants }) => {
-    let users = Object.entries(global.db.data.users).map(([key, value]) => {
+    let users = let users = Object.entries(global.db.data.users)
+    .filter(([key, value]) => participants.some(p => p.jid === key)) // Solo usuarios del grupo
+    .map(([key, value]) => {
         return { ...value, jid: key };
     });
 
