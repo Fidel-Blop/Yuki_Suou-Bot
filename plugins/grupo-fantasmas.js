@@ -1,56 +1,75 @@
 import { areJidsSameUser } from '@whiskeysockets/baileys'
 
-var handler = async (m, { conn, text, participants, args, command }) => {
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-let member = participants.map(u => u.id)
-if(!text) {
-var sum = member.length
-} else {
-var sum = text} 
-var total = 0
-var sider = []
-for (let i = 0; i < sum; i++) {
-let users = m.isGroup ? participants.find(u => u.id == member[i]) : {}
-if ((typeof global.db.data.users[member[i]] == 'undefined' || global.db.data.users[member[i]].chat == 0) && !users.isAdmin && !users.isSuperAdmin) { 
-if (typeof global.db.data.users[member[i]] !== 'undefined'){
-if (global.db.data.users[member[i]].whitelist == false){
-total++
-sider.push(member[i])}
-}else {
-total++
-sider.push(member[i])}}}
-const delay = time => new Promise(res=>setTimeout(res,time))
+const handler = async (m, { conn, text, participants, args, command }) => {
+  const scanner = '📡'
+  const purge = '🗑️'
+  const noGhosts = '✅'
+  const note = '📋'
 
-switch (command) {
+  let miembros = participants.map(u => u.id)
+  let objetivo = !text ? miembros.length : parseInt(text)
+  let totalFantasmas = 0
+  let listaFantasmas = []
 
-case 'fantasmas': 
-if(total == 0) return conn.reply(m.chat, `${emoji} Este grupo es activo, no tiene fantasmas.`, m) 
-m.reply(`${emoji} *Revisión de inactivos*\n\n${emoji2} *Lista de fantasmas*\n${sider.map(v => '@' + v.replace(/@.+/, '')).join('\n')}\n\n*📝 NOTA:*\nEsto no es al 100% acertado, el bot inicia el conteo de mensajes a partir de que se active en este número`, null, { mentions: sider }) 
-break
+  for (let i = 0; i < objetivo; i++) {
+    let user = m.isGroup ? participants.find(u => u.id == miembros[i]) : {}
+    let data = global.db.data.users[miembros[i]]
+    if ((typeof data === 'undefined' || data.chat === 0) && !user?.admin && !user?.isSuperAdmin) {
+      if (typeof data !== 'undefined') {
+        if (data.whitelist === false) {
+          totalFantasmas++
+          listaFantasmas.push(miembros[i])
+        }
+      } else {
+        totalFantasmas++
+        listaFantasmas.push(miembros[i])
+      }
+    }
+  }
 
-case 'kickfantasmas':  
-if(total == 0) return conn.reply(m.chat, `${emoji} Este grupo es activo no tiene fantasmas.`, m) 
-await m.reply(`${emoji} *Eliminación de inactivos*\n\n${emoji2} *Lista de fantasmas*\n${sider.map(v => '@' + v.replace(/@.+/, '')).join('\n')}\n\n${msm} _*El bot eliminara a los usuarios de la lista mencionada cada 10 segundos.*_`, null, { mentions: sider }) 
-await delay(1 * 10000)
-let chat = global.db.data.chats[m.chat]
-chat.welcome = false
-try {
+  switch (command) {
+    case 'fantasmas':
+      if (totalFantasmas === 0) {
+        return conn.reply(m.chat, `${noGhosts} *Sistema Fazbear Online...*\n\n🎉 No se detectaron fantasmas.\nEste grupo es *activo* y operativo.`, m)
+      }
+      return m.reply(
+        `${scanner} *ESCÁNER DE INACTIVOS - MODO FANTASMA*\n\n🧍‍♂️ *Fantasmas detectados:*\n${listaFantasmas.map(v => '@' + v.replace(/@.+/, '')).join('\n')}\n\n${note} *El sistema no es 100% exacto.*\nEl conteo inicia desde que el bot fue activado en el grupo.`,
+        null,
+        { mentions: listaFantasmas }
+      )
+    
+    case 'kickfantasmas':
+      if (totalFantasmas === 0) {
+        return conn.reply(m.chat, `${noGhosts} *Sistema Fazbear Online...*\n\n🎉 Este grupo no contiene presencias inactivas.`, m)
+      }
 
-let users = m.mentionedJid.filter(u => !areJidsSameUser(u, conn.user.id))
-let kickedGhost = sider.map(v => v.id).filter(v => v !== conn.user.jid)
-for (let user of users)
-if (user.endsWith('@s.whatsapp.net') && !(participants.find(v => areJidsSameUser(v.id, user)) || { admin: true }).admin)
-{
-let res = await conn.groupParticipantsUpdate(m.chat, [user], 'remove')
-kickedGhost.concat(res)
-await delay(1 * 10000)
-}} finally{
-chat.welcome = true
+      await m.reply(
+        `${purge} *PROTOCOLO DE PURGA ACTIVADO*\n\n🧍‍♂️ *Objetivos detectados:*\n${listaFantasmas.map(v => '@' + v.replace(/@.+/, '')).join('\n')}\n\n${note} *Los usuarios serán eliminados uno por uno, cada 10 segundos.*`,
+        null,
+        { mentions: listaFantasmas }
+      )
+
+      let chat = global.db.data.chats[m.chat]
+      chat.welcome = false
+
+      try {
+        let fantasmasAEliminar = listaFantasmas.filter(id => id !== conn.user.jid)
+
+        for (let user of fantasmasAEliminar) {
+          if (user.endsWith('@s.whatsapp.net') && !(participants.find(p => areJidsSameUser(p.id, user)) || { admin: true }).admin) {
+            await conn.groupParticipantsUpdate(m.chat, [user], 'remove')
+            await delay(10000)
+          }
+        }
+      } finally {
+        chat.welcome = true
+      }
+      break
+  }
 }
-break            
-}
 
-}
 handler.tags = ['grupo']
 handler.command = ['fantasmas', 'kickfantasmas']
 handler.group = true
@@ -59,5 +78,3 @@ handler.admin = true
 handler.fail = null
 
 export default handler
-
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
