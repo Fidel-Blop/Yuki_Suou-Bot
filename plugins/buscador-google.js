@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 
 let handler = async (m, { text }) => {
   if (!text) {
-    m.reply(`${emoji} Por favor, proporciona el termino de búsqueda que deseas realizar a *Google*.`);
+    m.reply(`${emoji} *Falla en el sistema de Freddy Fazbear...* Necesito que indiques qué quieres buscar en Google.`);
     return;
   }
 
@@ -13,26 +13,28 @@ let handler = async (m, { text }) => {
     const result = await response.json();
 
     if (!result.status) {
-      m.reply('Error al realizar la búsqueda.');
+      m.reply('🛑 *Error crítico en los sistemas de búsqueda Fazbear...*');
       return;
     }
 
-    let replyMessage = `${emoji2} Resultados de la búsqueda:\n\n`;
+    let replyMessage = `🔎 *Resultados encontrados por el Buscador de FNaF LATAM* 🔍\n\n`;
     result.data.slice(0, 1).forEach((item, index) => {
-      replyMessage += `☁️ *${index + 1}. ${item.title}*\n`;
-      replyMessage += `📰 *${item.description}*\n`;
-      replyMessage += `🔗 URL: ${item.url}`;
+      replyMessage += `📂 *${index + 1}. ${item.title}*\n`;
+      replyMessage += `📃 ${item.description}\n`;
+      replyMessage += `🔗 ${item.url}`;
     });
 
-m.react('✅')
-
+    m.react('✅');
     m.reply(replyMessage);
+
   } catch (error) {
-    console.error(`${msm} Error al realizar la solicitud a la API:`, error);
-    m.reply(`${msm} Ocurrió un error al obtener los resultados.`);
+    console.error(`${msm} ⚠️ Error técnico en los archivos del sistema Fazbear:`, error);
+    m.reply(`${msm} Algo salió mal al buscar... El sistema está inestable. 🔧`);
   }
 };
 
 handler.command = ['google'];
+handler.help = ['google <consulta>'];
+handler.tags = ['search'];
 
 export default handler;
