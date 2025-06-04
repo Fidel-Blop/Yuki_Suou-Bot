@@ -1,76 +1,152 @@
 let cooldowns = {};
 
-let handler = async (m, { conn, usedPrefix, command }) => {
+let handler = async (m, { conn, usedPrefix }) => {
   let users = global.db.data.users;
   let senderId = m.sender;
 
-  let tiempoEspera = 8 * 60;
+  // Tiempo de espera: 8 minutos (cambiado a segundos para mejor control)
+  let cooldownTime = 8 * 60;
 
-  if (cooldowns[m.sender] && Date.now() - cooldowns[m.sender] < tiempoEspera * 1000) {
-    let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[m.sender] + tiempoEspera * 1000 - Date.now()) / 1000));
-    return conn.reply(m.chat, `⏱️ Ya exploraste la mazmora recientemente. Espera ⏳ *${tiempoRestante}* antes de aventurarte de nuevo.`, m);
+  if (cooldowns[senderId] && Date.now() - cooldowns[senderId] < cooldownTime * 1000) {
+    let remaining = segundosAHMS(Math.ceil((cooldowns[senderId] + cooldownTime * 1000 - Date.now()) / 1000));
+    return conn.reply(m.chat, `⏳ *No tan rápido, aventurero.* Ya exploraste la mazmorra hace poco.\nEspera *${remaining}* para volver a desafiar las sombras.`, m);
   }
 
-  cooldowns[m.sender] = Date.now();
+  cooldowns[senderId] = Date.now();
 
   if (!users[senderId]) {
     users[senderId] = { health: 100, coin: 0, exp: 0 };
   }
 
+  // Eventos mazmorra - estilo FNaF LATAM, con toque oscuro y misterioso
   const eventos = [
-    { nombre: 'Mazmorras de los Caídos', tipo: 'victoria', coin: randomNumber(150, 300), exp: randomNumber(50, 100), health: 0, mensaje: `🏆 ¡Has derrotado al guardián! Al abrir su cofre, encontraste un montón de ${moneda}.` },
-    { nombre: 'Cámara de los Espectros', tipo: 'derrota', coin: randomNumber(-70, -40), exp: randomNumber(10, 20), health: randomNumber(-15, -5), mensaje: `⚠️ Un espectro te ha atrapado en su red de sombras. Perdiste algunas ${moneda} mientras logras escaparte.` },
-    { nombre: 'Cripta del Olvido', tipo: 'victoria', coin: randomNumber(250, 400), exp: randomNumber(100, 150), health: 0, mensaje: `💎 Te adentras y descubres un tesoro antiguo lleno de gemas y ${moneda}.` },
-    { nombre: 'Trampa del Laberinto', tipo: 'trampa', coin: 0, exp: randomNumber(5, 10), health: 0, mensaje: `🚧 Activaste una trampa oculta. Afortunadamente, logras salir ileso, pero no ganaste nada.` },
-    { nombre: 'Cámara de los Demonios', tipo: 'derrota', coin: randomNumber(-150, -80), exp: randomNumber(20, 40), health: randomNumber(-30, -20), mensaje: `🐉 Un feroz demonio te embosca en la oscuridad. Logras escapar, pero no sin perder algunas ${moneda} y salud.` },
-    { nombre: 'Santuario de la Luz', tipo: 'victoria', coin: randomNumber(100, 200), exp: randomNumber(30, 60), health: 0, mensaje: `🎆 Encuentras un cofre repleto de riquezas que brillan intensamente.` },
-    { nombre: 'Laberinto de los Perdidos', tipo: 'trampa', coin: 0, exp: randomNumber(5, 15), health: 0, mensaje: `🌀 Te adentras en un laberinto confuso. Logras salir, pero no obtienes recompensas.` },
-    { nombre: 'Ruinas de los Caídos', tipo: 'victoria', coin: randomNumber(150, 300), exp: randomNumber(70, 120), health: 0, mensaje: `🏺 Descubres artefactos antiguos que brillan con un encanto misterioso y te recompensan.` },
-    { nombre: 'Guarida del Dragón', tipo: 'derrota', coin: randomNumber(-200, -100), exp: randomNumber(20, 40), health: randomNumber(-30, -20), mensaje: `🔥 Un dragón lanza una llamarada hacia ti. Logras escapar, pero pierdes algunas riquezas y salud.` },
-    { nombre: 'Sabio de la Mazmora', tipo: 'victoria', coin: randomNumber(50, 100), exp: randomNumber(30, 50), health: 0, mensaje: `👴 Te encuentras con un sabio que comparte historias y te recompensa por tu atención.` },
+    {
+      nombre: 'Cámara del Guardián Caído',
+      tipo: 'victoria',
+      coin: randomNumber(180, 350),
+      exp: randomNumber(60, 120),
+      health: 0,
+      mensaje: `🗡️ *Victoria:* Has derrotado al Guardián Caído y saqueado su tesoro oscuro. 💰`
+    },
+    {
+      nombre: 'Sótano de los Espectros',
+      tipo: 'derrota',
+      coin: randomNumber(-90, -50),
+      exp: randomNumber(10, 25),
+      health: randomNumber(-20, -10),
+      mensaje: `👻 *Derrota:* Los espectros te atraparon en sus redes etéreas. Perdiste ${moneda} y parte de tu salud.`
+    },
+    {
+      nombre: 'Cripta Olvidada',
+      tipo: 'victoria',
+      coin: randomNumber(300, 450),
+      exp: randomNumber(120, 180),
+      health: 0,
+      mensaje: `💎 *Tesoro antiguo:* Encontraste gemas brillantes y riquezas olvidadas.`
+    },
+    {
+      nombre: 'Trampa del Laberinto',
+      tipo: 'trampa',
+      coin: 0,
+      exp: randomNumber(8, 15),
+      health: 0,
+      mensaje: `⚠️ *Alerta:* Activaste una trampa. Escapaste ileso, pero sin ganancias.`
+    },
+    {
+      nombre: 'Guarida del Demonio',
+      tipo: 'derrota',
+      coin: randomNumber(-170, -100),
+      exp: randomNumber(25, 45),
+      health: randomNumber(-35, -25),
+      mensaje: `🔥 *Peligro extremo:* El demonio te atacó con fuego infernal. Perdiste riquezas y salud.`
+    },
+    {
+      nombre: 'Santuario Luminoso',
+      tipo: 'victoria',
+      coin: randomNumber(120, 250),
+      exp: randomNumber(40, 75),
+      health: 0,
+      mensaje: `✨ *Suerte:* Encontraste un cofre lleno de riquezas que brillan con luz propia.`
+    },
+    {
+      nombre: 'Laberinto Perdido',
+      tipo: 'trampa',
+      coin: 0,
+      exp: randomNumber(8, 18),
+      health: 0,
+      mensaje: `🌪️ *Confusión:* Te perdiste en el laberinto y saliste sin nada.`
+    },
+    {
+      nombre: 'Ruinas del Ancestro',
+      tipo: 'victoria',
+      coin: randomNumber(180, 350),
+      exp: randomNumber(80, 140),
+      health: 0,
+      mensaje: `🏺 *Historia viva:* Encontraste artefactos valiosos de épocas olvidadas.`
+    },
+    {
+      nombre: 'Nido del Dragón',
+      tipo: 'derrota',
+      coin: randomNumber(-220, -130),
+      exp: randomNumber(25, 50),
+      health: randomNumber(-40, -30),
+      mensaje: `🐉 *Peligro:* El dragón te lanzó una llamarada. Escapaste con heridas y pérdidas.`
+    },
+    {
+      nombre: 'Sabio de las Sombras',
+      tipo: 'victoria',
+      coin: randomNumber(70, 130),
+      exp: randomNumber(35, 60),
+      health: 0,
+      mensaje: `🧙‍♂️ *Sabiduría:* El sabio compartió secretos y te recompensó por tu valor.`
+    },
   ];
 
   let evento = eventos[Math.floor(Math.random() * eventos.length)];
 
+  // Actualizar stats según el tipo de evento
   if (evento.tipo === 'victoria') {
     users[senderId].coin += evento.coin;
     users[senderId].exp += evento.exp;
-    users[senderId].health += evento.health;
+    users[senderId].health = Math.min(users[senderId].health + evento.health, 100);
   } else if (evento.tipo === 'derrota') {
-    users[senderId].coin += evento.coin;
+    users[senderId].coin = Math.max(users[senderId].coin + evento.coin, 0);
     users[senderId].exp += evento.exp;
-    users[senderId].health += evento.health;
+    users[senderId].health = Math.max(users[senderId].health + evento.health, 0);
   } else if (evento.tipo === 'trampa') {
     users[senderId].exp += evento.exp;
   }
 
-  let img = 'https://raw.githubusercontent.com/The-King-Destroy/Adiciones/main/Contenido/1745558209798.jpeg';
-  let info = `╭━〔 Mazmoras Antiguas 〕\n` +
-             `┃Misión: *${evento.nombre}*\n` +
-             `┃Evento: ${evento.mensaje}\n` +
-             `┃Recompensa: ${evento.coin > 0 ? '+' : '-'}${Math.abs(evento.coin)} *${moneda}* y +${evento.exp} *XP*.\n` +
-             `┃Tu salud ${evento.health < 0 ? 'bajó en: ' + Math.abs(evento.health) : 'se mantuvo igual.'}\n` +
-             `╰━━━━━━━━━━━━⬣`;
+  let img = 'https://pin.it/1eO5ozrJV';
 
-  await conn.sendFile(m.chat, img, 'mazmorras.jpg', info, fkontak);
+  let info = `╭━〔 🏰 Mazmorra Oscura 〕━⬣\n` +
+             `┃ *Misión:* ${evento.nombre}\n` +
+             `┃ *Evento:* ${evento.mensaje}\n` +
+             `┃ *Recompensa:* ${evento.coin > 0 ? '+' : ''}${evento.coin} ${moneda} | +${evento.exp} XP\n` +
+             `┃ *Salud:* ${users[senderId].health} ❤️\n` +
+             `╰━━━━━━━━━━━━━━━⬣`;
+
+  await conn.sendFile(m.chat, img, 'mazmorra.jpg', info, fkontak);
 
   global.db.write();
 };
 
 handler.tags = ['rpg'];
-handler.help = ['explorar'];
-handler.command = ['dungeon', 'mazmorra', 'cueva'];
+handler.help = ['mazmorra', 'dungeon', 'cueva', 'explorar'];
+handler.command = ['mazmorra', 'dungeon', 'cueva', 'explorar'];
 handler.register = true;
 handler.group = true;
 
 export default handler;
 
+// Función para número aleatorio
 function randomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Convierte segundos a minutos y segundos
 function segundosAHMS(segundos) {
   let minutos = Math.floor(segundos / 60);
   let segundosRestantes = segundos % 60;
-  return `${minutos} minutos y ${segundosRestantes} segundos`;
+  return `${minutos}m ${segundosRestantes}s`;
 }
