@@ -1,22 +1,34 @@
 import db from '../lib/database.js'
 
 let handler = async (m, { args }) => {
-let user = global.db.data.users[m.sender]
-if (!args[0]) return m.reply(`${emoji} Ingresa la cantidad de *${moneda}* que deseas Retirar.`)
-if (args[0] == 'all') {
-let count = parseInt(user.bank)
-user.bank -= count * 1
-user.coin += count * 1
-await m.reply(`${emoji} Retiraste *${count} ${moneda}* del banco, ahora podras usarlo pero tambien podran robartelo.`)
-return !0
+  let user = global.db.data.users[m.sender]
+  let moneda = '💰 monedas';
+  let emoji = '🏦';
+  let emojiError = '⚠️';
+
+  if (!args[0]) return m.reply(`${emojiError} *¡Ey, minero!* Debes decir cuánto ${moneda} quieres retirar.\n\nEjemplo:\n> *#retirar 5000*\n> *#retirar all*`);
+
+  if (args[0].toLowerCase() === 'all') {
+    let count = parseInt(user.bank);
+    if (!count || count <= 0) return m.reply(`${emojiError} No tienes ${moneda} en el banco para retirar.`);
+    user.bank -= count;
+    user.coin += count;
+    await m.reply(`${emoji} *¡Retiro exitoso!*\nHas sacado *${count} ${moneda}* de tu banco.\n\n⚠️ ¡Cuidado! Ahora están en tu bolsillo, y pueden robarte.`);
+    return;
+  }
+
+  let count = parseInt(args[0]);
+  if (isNaN(count) || count <= 0) return m.reply(`${emojiError} Eso no es un número válido.\nUsa:\n> *#retirar 25000*\n> *#retirar all*`);
+
+  if (!user.bank || user.bank <= 0) return m.reply(`${emojiError} No tienes ${moneda} guardadas en el banco.`);
+
+  if (user.bank < count) return m.reply(`${emojiError} Solo tienes *${user.bank} ${moneda}* guardadas en el banco. No puedes retirar más.`);
+
+  user.bank -= count;
+  user.coin += count;
+
+  await m.reply(`${emoji} *Retiro exitoso*\nHas retirado *${count} ${moneda}* del banco.\n⚠️ Ahora están en tu bolsillo y pueden ser robados. ¡Cuídate!`);
 }
-if (!Number(args[0])) return m.reply(`${emoji2} Debes retirar una cantidad válida.\n > Ejemplo 1 » *#retirar 25000*\n> Ejemplo 2 » *#retirar all*`)
-let count = parseInt(args[0])
-if (!user.bank) return m.reply(`${emoji2} No tienes suficientes *${moneda}* en el Banco.`)
-if (user.bank < count) return m.reply(`${emoji2} Solo tienes *${user.bank} ${moneda}* en el Banco.`)
-user.bank -= count * 1
-user.coin += count * 1
-await m.reply(`${emoji} Retiraste *${count} ${moneda}* del banco, ahora podras usarlo pero tambien podran robartelo.`)}
 
 handler.help = ['retirar']
 handler.tags = ['rpg']
