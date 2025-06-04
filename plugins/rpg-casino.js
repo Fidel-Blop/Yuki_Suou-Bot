@@ -1,54 +1,63 @@
-import db from '../lib/database.js'
+import db from '../lib/database.js';
 
-let buatall = 1
-let cooldowns = {}
+let buatall = 1;
+let cooldowns = {};
 
-let handler = async (m, { conn, args, usedPrefix, command, DevMode }) => {
-let user = global.db.data.users[m.sender]
-let randomaku = `${Math.floor(Math.random() * 101)}`.trim()
-let randomkamu = `${Math.floor(Math.random() * 55)}`.trim()
-let Aku = (randomaku * 1)
-let Kamu = (randomkamu * 1)
-let count = args[0]
-let who = m.fromMe ? conn.user.jid : m.sender
-let username = conn.getName(who)
-let tiempoEspera = 15
-if (cooldowns[m.sender] && Date.now() - cooldowns[m.sender] < tiempoEspera * 1000) {
-let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[m.sender] + tiempoEspera * 1000 - Date.now()) / 1000))
-conn.reply(m.chat, `${emoji3} Ya has iniciado una apuesta recientemente, espera *⏱️ ${tiempoRestante}* para apostar nuevamente`, m)
-return
-}
-cooldowns[m.sender] = Date.now()
-count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / buatall) : parseInt(count) : args[0] ? parseInt(args[0]) : 1
-count = Math.max(1, count)
-if (args.length < 1) return conn.reply(m.chat, `${emoji} Ingresa la cantidad de ` + `💸 *${moneda}*` + ' que deseas aportar contra' + ` *${botname}*` + `\n\n` + '`Ejemplo:`\n' + `> *${usedPrefix + command}* 100`, m)
-if (user.coin >= count * 1) {
-user.coin -= count * 1
-if (Aku > Kamu) {
-conn.reply(m.chat, `${emoji2} \`Veamos que numeros tienen!\`\n\n`+ `➠ *${botname}* : ${Aku}\n➠ *${username}* : ${Kamu}\n\n> ${username}, *PERDISTE* ${formatNumber(count)} 💸 ${moneda}.`.trim(), m)
-} else if (Aku < Kamu) {
-user.coin += count * 2
-conn.reply(m.chat, `${emoji2} \`Veamos que numeros tienen!\`\n\n`+ `➠ *${botname}* : ${Aku}\n➠ *${username}* : ${Kamu}\n\n> ${username}, *GANASTE* ${formatNumber(count * 2)} 💸 ${moneda}.`.trim(), m)
-} else {
-user.coin += count * 1
-conn.reply(m.chat, `${emoji2} \`Veamos que numeros tienen!\`\n\n`+ `➠ *${botname}* : ${Aku}\n➠ *${username}* : ${Kamu}\n\n> ${username} obtienes ${formatNumber(count * 1)} 💸 ${moneda}.`.trim(), m)}
-} else conn.reply(m.chat, `No tienes *${formatNumber(count)} 💸 ${moneda}* para apostar!`.trim(), m)}
+let handler = async (m, { conn, args, usedPrefix, command }) => {
+    const emoji = '🎰';
+    const emoji2 = '❌';
+    const emoji3 = '⏳';
+    const moneda = '🪙';
+    const botname = 'NightShiftBot';
 
-handler.help = ['apostar *<cantidad>*']
-handler.tags = ['economy']
-handler.command = ['apostar','casino']
+    let user = global.db.data.users[m.sender];
+    let randomBot = Math.floor(Math.random() * 101);
+    let randomPlayer = Math.floor(Math.random() * 55);
+    let apuesta = args[0];
+    let who = m.fromMe ? conn.user.jid : m.sender;
+    let username = conn.getName(who);
+    let tiempoEspera = 15;
+
+    if (cooldowns[m.sender] && Date.now() - cooldowns[m.sender] < tiempoEspera * 1000) {
+        let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[m.sender] + tiempoEspera * 1000 - Date.now()) / 1000));
+        return conn.reply(m.chat, `${emoji3} *Ya jugaste con el sistema hace poco...*\n🕐 Espera *${tiempoRestante}* antes de hacer otra apuesta.`, m);
+    }
+
+    cooldowns[m.sender] = Date.now();
+    apuesta = /all/i.test(apuesta) ? Math.floor(user.limit / buatall) : parseInt(apuesta);
+    if (isNaN(apuesta) || apuesta < 1) return conn.reply(m.chat,
+        `${emoji} *Ingresa la cantidad de ${moneda} que deseas apostar contra ${botname}.*\n\n📌 Ejemplo:\n> *${usedPrefix + command} 10*`, m);
+
+    if (user.limit < apuesta) return conn.reply(m.chat, `${emoji2} *No tienes suficiente energía nocturna (💠 limit) para esta jugada...*\n💠 Disponibles: ${user.limit}`, m);
+
+    let resultado;
+    if (randomPlayer > randomBot) {
+        user.limit += apuesta;
+        resultado = `🎉 *¡Ganaste esta ronda contra el sistema!*\n\n🎮 Jugador: *${randomPlayer}*\n🤖 Bot: *${randomBot}*\n💠 Recompensa: +${apuesta} energía`;
+    } else if (randomPlayer < randomBot) {
+        user.limit -= apuesta;
+        resultado = `☠️ *Perdiste... El sistema sigue ganando*\n\n🎮 Jugador: *${randomPlayer}*\n🤖 Bot: *${randomBot}*\n💠 Perdida: -${apuesta} energía`;
+    } else {
+        resultado = `🤝 *Empate total en esta ronda*\n\n🎮 Jugador: *${randomPlayer}*\n🤖 Bot: *${randomBot}*\n💠 Tus fondos no se movieron.`;
+    }
+
+    conn.reply(m.chat, `🎭 *Simulador Nocturno de Apuestas - FNaF LATAM*\n\n📟 Usuario: *${username}*\n\n${resultado}\n\n🔦 *Recuerda: todo está siendo observado... incluso por los animatrónicos.*`, m);
+};
+
+handler.help = ['casino <cantidad>'];
+handler.tags = ['economia'];
+handler.command = ['casino', 'apostar'];
 handler.group = true;
-handler.register = true
-handler.fail = null
-export default handler
+handler.register = true;
 
-function pickRandom(list) {
-return list[Math.floor(Math.random() * list.length)]
-}
+export default handler;
+
+// ⏱️ Función para convertir segundos a formato HH:MM:SS
 function segundosAHMS(segundos) {
-let segundosRestantes = segundos % 60
-return `${segundosRestantes} segundos`
-}
-function formatNumber(number) {
-return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    let horas = Math.floor(segundos / 3600);
+    let minutos = Math.floor((segundos % 3600) / 60);
+    let segundosRestantes = segundos % 60;
+    return [horas, minutos, segundosRestantes]
+        .map(v => v.toString().padStart(2, '0'))
+        .join(':');
 }
