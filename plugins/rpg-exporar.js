@@ -1,31 +1,31 @@
 let cooldowns = {};
 
-let handler = async (m, { conn, text, command }) => {
+let handler = async (m, { conn, command }) => {
+  const emoji = '👀';
+  const moneda = '💸';
+  const senderId = m.sender;
   let users = global.db.data.users;
-  let senderId = m.sender;
+  const tiempoEspera = 5 * 60; // 5 minutos en segundos
 
-  let tiempoEspera = 5 * 60;
-
-  if (cooldowns[m.sender] && Date.now() - cooldowns[m.sender] < tiempoEspera * 1000) {
-    let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[m.sender] + tiempoEspera * 1000 - Date.now()) / 1000));
-    m.reply(`${emoji} Ya exploraste el bosque recientemente. Espera ⏳ *${tiempoRestante}* antes de aventurarte de nuevo.`);
-    return;
+  if (cooldowns[senderId] && Date.now() - cooldowns[senderId] < tiempoEspera * 1000) {
+    let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[senderId] + tiempoEspera * 1000 - Date.now()) / 1000));
+    return m.reply(`${emoji} Ya exploraste los oscuros pasillos recientemente.\n⏳ *Espera ${tiempoRestante} antes de aventurarte de nuevo...* \n*No dejes que Freddy te atrape.*`);
   }
 
-  cooldowns[m.sender] = Date.now();
+  cooldowns[senderId] = Date.now();
 
   if (!users[senderId]) {
     users[senderId] = { health: 100, coin: 0, exp: 0 };
   }
 
   const eventos = [
-    { nombre: '💰 Tesoro Escondido', coin: 100, exp: 50, health: 0, mensaje: `¡Encontraste un cofre lleno de ${moneda}!` },
-    { nombre: '🐻 Oso Salvaje', coin: -50, exp: 20, health: -10, mensaje: `Un oso te atacó y perdiste algunas ${moneda} mientras escapabas.` },
-    { nombre: '🕸️ Trampa Antigua', coin: 0, exp: 10, health: 0, mensaje: 'Caiste en una trampa, pero lograste escapar ileso.' },
-    { nombre: '💎 Piedra Mágica', coin: 200, exp: 100, health: 0, mensaje: `¡Descubriste una piedra mágica que te otorgó ${moneda} adicionales!` },
-    { nombre: '🧙 Viejo Sabio', coin: 50, exp: 30, health: 0, mensaje: 'Un sabio te recompensó por escuchar sus historias.' },
-    { nombre: '⚔️ Enemigo Oculto', coin: -30, exp: 15, health: -10, mensaje: `Te enfrentaste a un enemigo oculto y perdiste algunos ${moneda}.` },
-    { nombre: '🍄 Setas Extrañas', coin: 0, exp: 5, health: 0, mensaje: 'Comiste unas setas del bosque, pero no pasó nada interesante.' }
+    { nombre: '💰 Cofre Misterioso', coin: 100, exp: 50, health: 0, mensaje: `¡Encontraste un cofre con ${moneda}!` },
+    { nombre: '🐻 Ataque del Animatrónico', coin: -50, exp: 20, health: -10, mensaje: `Un animatrónico te atacó y perdiste algunas ${moneda} mientras escapabas.` },
+    { nombre: '🕸️ Trampa del Pasillo', coin: 0, exp: 10, health: 0, mensaje: 'Caiste en una trampa, pero lograste salir ileso.' },
+    { nombre: '💎 Rayo de Energía', coin: 200, exp: 100, health: 0, mensaje: `Una energía misteriosa te otorgó ${moneda} extra.` },
+    { nombre: '🧙 Sabio de la Pizzería', coin: 50, exp: 30, health: 0, mensaje: 'Un viejo sabio te contó secretos y te recompensó.' },
+    { nombre: '⚔️ Emboscada Oculta', coin: -30, exp: 15, health: -10, mensaje: `Un enemigo oculto te atacó y perdiste algo de ${moneda}.` },
+    { nombre: '🍄 Setas del Mantenimiento', coin: 0, exp: 5, health: 0, mensaje: 'Comiste unas setas extrañas, pero no pasó nada raro.' }
   ];
 
   let evento = eventos[Math.floor(Math.random() * eventos.length)];
@@ -34,15 +34,18 @@ let handler = async (m, { conn, text, command }) => {
   users[senderId].exp += evento.exp;
   users[senderId].health += evento.health;
 
+  // Evitar que la salud sea negativa
+  if(users[senderId].health < 0) users[senderId].health = 0;
+
   let img = 'https://raw.githubusercontent.com/The-King-Destroy/Adiciones/main/Contenido/1745557951898.jpeg';
-  let info = `╭━〔 Exploración en el Bosque〕\n` +
-             `┃Misión: *${evento.nombre}*\n` +
-             `┃Evento: ${evento.mensaje}\n` +
-             `┃Recompensa: ${evento.coin > 0 ? '+' : '-'}${Math.abs(evento.coin)} *${moneda}* y +${evento.exp} *XP*.\n` +
-             `┃Tu salud ${evento.health < 0 ? 'bajó en: ' + Math.abs(evento.health) : 'se mantuvo igual.'}\n` +
+  let info = `╭━〔 *Exploración en Freddy's* 〕\n` +
+             `┃ Misión: *${evento.nombre}*\n` +
+             `┃ Evento: ${evento.mensaje}\n` +
+             `┃ Recompensa: ${evento.coin > 0 ? '+' : '-'}${Math.abs(evento.coin)} ${moneda} y +${evento.exp} XP\n` +
+             `┃ Salud: ${evento.health < 0 ? `- ${Math.abs(evento.health)}` : '+ 0'} (Ahora tienes *${users[senderId].health}* puntos)\n` +
              `╰━━━━━━━━━━━━⬣`;
 
-  await conn.sendFile(m.chat, img, 'exploracion.jpg', info, fkontak);
+  await conn.sendFile(m.chat, img, 'exploracion.jpg', info, m);
 
   global.db.write();
 };
