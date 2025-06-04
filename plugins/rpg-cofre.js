@@ -1,68 +1,60 @@
 const handler = async (m, { isPrems, conn }) => {
+  const emoji = '🪙', emoji3 = '⏱️', emoji4 = '⚠️';
+  const moneda = '💸';
+
   if (!global.db.data.users[m.sender]) {
-    throw `${emoji4} Usuario no encontrado.`;
+    throw `${emoji4} *¡Error 404! Usuario no encontrado... o quizás *"removido"* por las sombras.*`;
   }
 
-  const lastCofreTime = global.db.data.users[m.sender].lastcofre;
-  const timeToNextCofre = lastCofreTime + 86400000;
+  const lastCofreTime = global.db.data.users[m.sender].lastcofre || 0;
+  const cooldown = 86400000;
+  const now = Date.now();
+  const timeToNextCofre = lastCofreTime + cooldown;
 
-  if (Date.now() < timeToNextCofre) {
-    const tiempoRestante = timeToNextCofre - Date.now();
-    const mensajeEspera = `${emoji3} Ya reclamaste tu cofre\n⏰️ Regresa en: *${msToTime(tiempoRestante)}* para volver a reclamar.`;
+  if (now < timeToNextCofre) {
+    const tiempoRestante = timeToNextCofre - now;
+    const mensajeEspera = `${emoji3} *Ya abriste un cofre hoy... y el eco de ese sonido aún resuena.*\n\n🔒 Regresa en: *${msToTime(tiempoRestante)}*`;
     await conn.sendMessage(m.chat, { text: mensajeEspera }, { quoted: m });
     return;
   }
 
   const img = 'https://raw.githubusercontent.com/The-King-Destroy/Adiciones/main/Contenido/1745557947304.jpeg';
-  const dia = Math.floor(Math.random() * 100);
-  const tok = Math.floor(Math.random() * 10);
-  const ai = Math.floor(Math.random() * 40);
-  const expp = Math.floor(Math.random() * 5000);
+  const recompensaMoneda = Math.floor(Math.random() * 100);
+  const recompensaDiamante = Math.floor(Math.random() * 40);
+  const recompensaTokens = Math.floor(Math.random() * 10);
+  const recompensaExp = Math.floor(Math.random() * 5000);
 
-  global.db.data.users[m.sender].coin += dia;
-  global.db.data.users[m.sender].diamonds += ai;
-  global.db.data.users[m.sender].joincount += tok;
-  global.db.data.users[m.sender].exp += expp;
-  global.db.data.users[m.sender].lastcofre = Date.now();
+  global.db.data.users[m.sender].coin += recompensaMoneda;
+  global.db.data.users[m.sender].diamonds += recompensaDiamante;
+  global.db.data.users[m.sender].joincount += recompensaTokens;
+  global.db.data.users[m.sender].exp += recompensaExp;
+  global.db.data.users[m.sender].lastcofre = now;
 
   const texto = `
-╭━〔 Cσϝɾҽ Aʅҽαƚσɾισ 〕⬣
-┃📦 *Obtienes Un Cofre*
-┃ ¡Felicidades!
-╰━━━━━━━━━━━━⬣
+🎁 *COFRE ABIERTO... ¿O LIBERADO?*
+━━━━━━━━━━━━━━━━━━
+📦 *Monedas encontradas:* ${recompensaMoneda} ${moneda}
+💎 *Fragmentos brillantes:* ${recompensaDiamante}
+🎟️ *Tokens malditos:* ${recompensaTokens}
+✨ *Energía residual (EXP):* ${recompensaExp}
+━━━━━━━━━━━━━━━━━━
+🔔 *Consejo:* La próxima vez, asegúrate de que ese cofre no parpadee...
+  `.trim();
 
-╭━〔 Nυҽʋσʂ Rҽƈυɾʂσʂ 〕⬣
-┃ *${dia} ${moneda}* 💸
-┃ *${tok} Tokens* ⚜️
-┃ *${ai} Diamantes* 💎
-┃ *${expp} Exp* ✨
-╰━━━━━━━━━━━━⬣`;
-
-  try {
-    await conn.sendFile(m.chat, img, 'yuki.jpg', texto, fkontak);
-  } catch (error) {
-    throw `${msm} Ocurrió un error al enviar el cofre.`;
-  }
+  await conn.sendMessage(m.chat, { image: { url: img }, caption: texto }, { quoted: m });
 };
 
 handler.help = ['cofre'];
 handler.tags = ['rpg'];
-handler.command = ['cofre'];
-handler.level = 5;
-handler.group = true;
+handler.command = ['cofre', 'dailycofre'];
 handler.register = true;
+handler.group = false;
 
 export default handler;
 
-function msToTime(duration) {
-  const milliseconds = parseInt((duration % 1000) / 100);
-  let seconds = Math.floor((duration / 1000) % 60);
-  let minutes = Math.floor((duration / (1000 * 60)) % 60);
-  let hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-
-  hours = (hours < 10) ? '0' + hours : hours;
-  minutes = (minutes < 10) ? '0' + minutes : minutes;
-  seconds = (seconds < 10) ? '0' + seconds : seconds;
-
-  return `${hours} Horas ${minutes} Minutos`;
+function msToTime(ms) {
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  return `${h}h ${m}m ${s}s`;
 }
