@@ -2,58 +2,61 @@ let cooldowns = {}
 
 let handler = async (m, { conn, text, command, usedPrefix }) => {
   let users = global.db.data.users[m.sender]
+  let moneda = '💰 monedas';
+  let emojiInfo = '🎰'
+  let emojiSuccess = '✅'
+  let emojiFail = '❌'
+  let emojiWarn = '⚠️'
 
-  let tiempoEspera = 10
+  const tiempoEspera = 10 // segundos
 
+  // Control de cooldown
   if (cooldowns[m.sender] && Date.now() - cooldowns[m.sender] < tiempoEspera * 1000) {
     let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[m.sender] + tiempoEspera * 1000 - Date.now()) / 1000))
-    conn.reply(m.chat, `${emoji3} Ya has iniciado una apuesta recientemente, espera *⏱ ${tiempoRestante}* para apostar nuevamente`, m)
-    return
+    return conn.reply(m.chat, `${emojiWarn} *¡Calma, jugador!* Ya hiciste una apuesta hace poco.\nEspera *⏱ ${tiempoRestante}* para jugar otra vez.`, m)
   }
-
   cooldowns[m.sender] = Date.now()
 
-  if (!text) return conn.reply(m.chat, `${emoji} Debes ingresar una cantidad de *💸 ${moneda}* y apostar a un color, por ejemplo: *${usedPrefix + command} 20 black*`, m)
+  if (!text) return conn.reply(m.chat, `${emojiWarn} Debes ingresar una cantidad de ${moneda} y elegir un color para apostar.\n\nEjemplo:\n> *${usedPrefix + command} 20 red*\n> *${usedPrefix + command} 50 black*`, m)
 
   let args = text.trim().split(" ")
-  if (args.length !== 2) return conn.reply(m.chat, `${emoji2} Formato incorrecto. Debes ingresar una cantidad de *💸 ${moneda}* y apostar a un color, por ejemplo: *${usedPrefix + command} 20 black*`, m)
+  if (args.length !== 2) return conn.reply(m.chat, `${emojiWarn} Formato incorrecto. Usa:\n> *${usedPrefix + command} <cantidad> <color>*\nEjemplo:\n> *${usedPrefix + command} 100 red*`, m)
 
   let coin = parseInt(args[0])
   let color = args[1].toLowerCase()
 
-  if (isNaN(coin) || coin <= 0) return conn.reply(m.chat, `${emoji} Por favor, ingresa una cantidad válida para la apuesta.`, m)
+  if (isNaN(coin) || coin <= 0) return conn.reply(m.chat, `${emojiWarn} La cantidad debe ser un número válido y mayor a cero.`, m)
 
-  if (coin > 10000) return conn.reply(m.chat, `${emoji}  La cantidad máxima de apuesta es de 50 ${moneda}.`, m)
+  if (coin > 10000) return conn.reply(m.chat, `${emojiWarn} La apuesta máxima es de *10,000 ${moneda}* para mantener la emoción.` , m)
 
-  if (!(color === 'black' || color === 'red')) return conn.reply(m.chat, `${emoji2} Debes apostar a un color válido: *black* o *red*.`, m)
+  if (!(color === 'black' || color === 'red')) return conn.reply(m.chat, `${emojiWarn} Elige un color válido para apostar: *red* o *black*`, m)
 
-  if (coin > users.coin) return conn.reply(m.chat, `${emoji2} No tienes suficientes ${moneda} para realizar esa apuesta.`, m)
+  if (coin > users.coin) return conn.reply(m.chat, `${emojiFail} No tienes suficientes ${moneda} para apostar esa cantidad.\nSaldo actual: *${users.coin} ${moneda}*`, m)
 
-  await conn.reply(m.chat, `${emoji} Apostaste ${coin} *💸 ${moneda}* al color ${color}. Espera *⏱ 10 segundos* para conocer el resultado.`, m)
+  await conn.reply(m.chat, `${emojiInfo} Has apostado *${coin} ${moneda}* al color *${color.toUpperCase()}*.\n🎲 Preparando ruleta... ¡Suerte! 🍀\nEspera *⏱ 10 segundos* para el resultado.`, m)
 
   setTimeout(() => {
-    let result = Math.random()
-    let win = false
+    let resultado = Math.random()
+    let gana = false
 
-    if (result < 0.5) {
-      win = color === 'black'
+    if (resultado < 0.5) {
+      gana = color === 'black'
     } else {
-      win = color === 'red'
+      gana = color === 'red'
     }
 
-    if (win) {
+    if (gana) {
       users.coin += coin
-      conn.reply(m.chat, `${emoji} ¡Ganaste! Obtuviste ${coin} *💸 ${moneda}*. Total: ${users.coin} *💸 ${moneda}*.`, m)
+      conn.reply(m.chat, `${emojiSuccess} *¡Felicidades!* Ganaste *${coin} ${moneda}*.\n💰 Total: *${users.coin} ${moneda}*`, m)
     } else {
       users.coin -= coin
-      conn.reply(m.chat, `${emoji2} Perdiste. Se restaron ${coin} *💸 ${moneda}*. Total: ${users.coin} *💸 ${moneda}*.`, m)
+      conn.reply(m.chat, `${emojiFail} Perdiste la apuesta.\n🔻 Se descontaron *${coin} ${moneda}*.\n💰 Total: *${users.coin} ${moneda}*`, m)
     }
-
-
   }, 10000)
 }
+
 handler.tags = ['economy']
-handler.help =['ruleta *<cantidad> <color>*']
+handler.help = ['ruleta *<cantidad> <color>*']
 handler.command = ['ruleta', 'roulette', 'rt']
 handler.register = true
 handler.group = true 
@@ -61,6 +64,6 @@ handler.group = true
 export default handler
 
 function segundosAHMS(segundos) {
-  let segundosRestantes = segundos % 60
-  return `${segundosRestantes} segundos`
+  // Para esta ruleta solo mostramos segundos
+  return `${segundos} segundos`
 }
