@@ -46,16 +46,6 @@ let handler = async (m, { conn, args }) => {
 > ✦ buscador de imagenes de Google.
 ᰔᩚ *#infoanime*
 > ✦ Buscador de información de anime/manga.
-ᰔᩚ *#hentaisearch • #searchhentai*
-> ✦ Buscador de capítulos hentai.
-ᰔᩚ #xnxxsearch • #xnxxs*
-> ✦ Buscador de vídeos de Xnxx.
-ᰔᩚ *#xvsearch • #xvideossearch*
-> ✦ Buscador de vídeos de Xvideos.
-ᰔᩚ *#pornhubsearch • #phsearch*
-> ✦ Buscador de videos de Pornhub.
-ᰔᩚ *#npmjs*
-> ✦ Buscandor de npmjs.
 
 📂 『𝘔𝘰𝘥𝘰 𝘚𝘦𝘤𝘶𝘦𝘯𝘤𝘪𝘢 — 𝘋𝘦𝘴𝘤𝘢𝘳𝘨𝘢𝘴 𝘔𝘶𝘭𝘵𝘪𝘱𝘭𝘦𝘴』
 
@@ -84,18 +74,8 @@ let handler = async (m, { conn, args }) => {
 > ✦ Descargar archivos por Terabox.
 ᰔᩚ *#ttimg • #ttmp3* + <url>
 > ✦ Descarga fotos/audios de tiktok. 
-ᰔᩚ *#gitclone* + <url> 
-> ✦ Descarga un repositorio de github.
-ᰔᩚ *#xvideosdl*
-> ✦ Descarga videos porno de (Xvideos). 
-ᰔᩚ *#xnxxdl*
-> ✦ Descarga videos porno de (xnxx).
 ᰔᩚ *#apk • #modapk*
 > ✦ Descarga un apk de Aptoide.
-ᰔᩚ *#tiktokrandom • #ttrandom*
-> ✦ Descarga un video aleatorio de tiktok.
-ᰔᩚ *#npmdl • #npmdownloader*
-> ✦ Descarga paquetes de NPMJs.
 
 💰 『𝘚𝘪𝘴𝘵𝘦𝘮𝘢 𝘋𝘦 𝘛𝘪𝘦𝘯𝘥𝘢 — 𝘌𝘤𝘰𝘯𝘰𝘮í𝘢 𝘈𝘯𝘪𝘮𝘢𝘵𝘳ó𝘯𝘪𝘤𝘢』
 
@@ -112,13 +92,13 @@ let handler = async (m, { conn, args }) => {
 > ✦ Apuesta ¥enes al color rojo o negro.
 ᰔᩚ *#casino • #apostar*
 > ✦ Apuesta tus ¥enes en el casino.
-ᰔᩚ *#slot*
+ᰔᩚ *#slut*
 > ✦ Apuesta tus ¥enes en la ruleta y prueba tu suerte.
 ᰔᩚ *#cartera • #wallet*
 > ✦ Ver tus ¥enes en la cartera.
 ᰔᩚ *#banco • #bank*
 > ✦ Ver tus ¥enes en el banco.
-ᰔᩚ *#deposit • #depositar • #d*
+ᰔᩚ *#deposit • #depositar 
 > ✦ Deposita tus ¥enes al banco.
 ᰔᩚ *#with • #retirar • #withdraw*
 > ✦ Retira tus ¥enes del banco.
