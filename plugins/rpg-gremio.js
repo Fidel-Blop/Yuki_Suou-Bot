@@ -4,11 +4,11 @@ let handler = async (m, { conn }) => {
   let users = global.db.data.users;
   let senderId = m.sender;
 
-  let tiempoEspera = 10 * 60;
+  const tiempoEspera = 10 * 60; // 10 minutos de cooldown
 
   if (cooldowns[senderId] && Date.now() - cooldowns[senderId] < tiempoEspera * 1000) {
     let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[senderId] + tiempoEspera * 1000 - Date.now()) / 1000));
-    return conn.reply(m.chat, `⏱️ Ya has cazado recientemente. Espera ⏳ *${tiempoRestante}* antes de intentar de nuevo.`, m);
+    return conn.reply(m.chat, `⏳ *Ya cazaste para el gremio.* Descansa y vuelve en *${tiempoRestante}* para enfrentar nuevos desafíos.`, m);
   }
 
   cooldowns[senderId] = Date.now();
@@ -18,21 +18,21 @@ let handler = async (m, { conn }) => {
   }
 
   const eventos = [
-    { nombre: 'Batalla contra los Goblins', tipo: 'victoria', coin: randomNumber(20, 40), exp: randomNumber(10, 20), health: 0, mensaje: `🏆 ¡Has derrotado a los Goblins! Al caer, dejaron caer un montón de ${moneda}.` },
-    { nombre: 'Enfrentamiento con el Orco', tipo: 'derrota', coin: randomNumber(-30, -10), exp: randomNumber(5, 10), health: randomNumber(-15, -5), mensaje: `⚠️ Un Orco te atacó y has perdido salud y monedas en la pelea.` },
-    { nombre: 'Desafío del Dragón', tipo: 'victoria', coin: randomNumber(100, 150), exp: randomNumber(50, 80), health: 0, mensaje: `🔥 ¡Has vencido al Dragón! Encuentras un tesoro antiguo lleno de ${moneda}.` },
-    { nombre: 'Confrontación con el Esqueleto', tipo: 'derrota', coin: randomNumber(-20, -10), exp: randomNumber(5, 10), health: randomNumber(-10, -5), mensaje: `💀 Has caído ante un Esqueleto. La batalla fue intensa y perdiste algunas ${moneda}.` },
-    { nombre: 'Combate contra la Manticora', tipo: 'victoria', coin: randomNumber(80, 120), exp: randomNumber(40, 60), health: 0, mensaje: `🦁 Has derrotado a la Manticora. Su pelaje brillaba mientras caía, revelando un tesoro oculto de ${moneda}.` },
-    { nombre: 'Confrontación con el Troll', tipo: 'derrota', coin: randomNumber(-50, -20), exp: randomNumber(10, 20), health: randomNumber(-20, -10), mensaje: `🧌 Un Troll te atacó. Has perdido salud y algunas ${moneda} en la contienda.` },
-    { nombre: 'Duelo con el Licántropo', tipo: 'victoria', coin: randomNumber(60, 100), exp: randomNumber(30, 50), health: 0, mensaje: `🐺 Has derrotado a un Licántropo en una feroz batalla. Ganaste un botín de ${moneda}.` },
-    { nombre: 'Enfrentamiento con el Minotauro', tipo: 'derrota', coin: randomNumber(-40, -15), exp: randomNumber(10, 20), health: randomNumber(-15, -5), mensaje: `🪓 El Minotauro te ha atacado. Has sufrido daños y perdido algunas ${moneda}.` },
-    { nombre: 'Batalla contra el Fantasma', tipo: 'victoria', coin: randomNumber(30, 50), exp: randomNumber(20, 40), health: 0, mensaje: `👻 Has conseguido vencer al Fantasma que atormentaba la aldea. Recibes ${moneda} como recompensa.` },
-    { nombre: 'Lucha contra el Dragón de Hielo', tipo: 'derrota', coin: randomNumber(-60, -20), exp: randomNumber(15, 30), health: randomNumber(-25, -10), mensaje: `❄️ El Dragón de Hielo te ha congelado. Has perdido salud y algunas ${moneda}.` },
-    { nombre: 'Combate con la Hidra', tipo: 'victoria', coin: randomNumber(90, 130), exp: randomNumber(50, 80), health: 0, mensaje: `🐉 Has derrotado a la Hidra y encontrado un tesoro de ${moneda}.` },
-    { nombre: 'Desafío del Caballero Caído', tipo: 'derrota', coin: randomNumber(-30, -10), exp: randomNumber(5, 10), health: randomNumber(-15, -5), mensaje: `⚔️ Has sido derrotado por el Caballero Caído. Has perdido salud y monedas.` },
-    { nombre: 'Encuentro con la Bruja', tipo: 'troll', coin: 0, exp: randomNumber(20, 40), health: randomNumber(-10, -5), mensaje: `🧙 Te encontraste con una bruja que te lanzó un hechizo. Ganas experiencia.` },
-    { nombre: 'Emboscada de los Bandidos', tipo: 'troll', coin: 0, exp: randomNumber(15, 30), health: randomNumber(-5, -3), mensaje: `🗡️ Te emboscaron unos bandidos. Aunque lograste escapar, has perdido algo de salud.` },
-    { nombre: 'Caza de la Serpiente Gigante', tipo: 'victoria', coin: randomNumber(50, 80), exp: randomNumber(30, 50), health: 0, mensaje: `🐍 Has cazado a la Serpiente Gigante. Su piel es valiosa y obtienes ${moneda}.` },
+    { nombre: 'Batalla con Goblins 🗡️', tipo: 'victoria', coin: randomNumber(20, 40), exp: randomNumber(10, 20), health: 0, mensaje: `¡Goblins derrotados! Recolectaste ${moneda} del botín.` },
+    { nombre: 'Ataque del Orco 💥', tipo: 'derrota', coin: randomNumber(-30, -10), exp: randomNumber(5, 10), health: randomNumber(-15, -5), mensaje: `El Orco te golpeó fuerte. Perdiste salud y ${moneda}.` },
+    { nombre: 'Desafío al Dragón 🔥', tipo: 'victoria', coin: randomNumber(100, 150), exp: randomNumber(50, 80), health: 0, mensaje: `¡Dragón vencido! Encontraste un tesoro invaluable lleno de ${moneda}.` },
+    { nombre: 'Enfrentamiento con Esqueleto ☠️', tipo: 'derrota', coin: randomNumber(-20, -10), exp: randomNumber(5, 10), health: randomNumber(-10, -5), mensaje: `El Esqueleto te atrapó desprevenido. Salud y monedas perdidas.` },
+    { nombre: 'Cacería de la Manticora 🦁', tipo: 'victoria', coin: randomNumber(80, 120), exp: randomNumber(40, 60), health: 0, mensaje: `Has cazado a la Manticora. Su pelaje brilló y reveló un botín de ${moneda}.` },
+    { nombre: 'Ataque del Troll 🧌', tipo: 'derrota', coin: randomNumber(-50, -20), exp: randomNumber(10, 20), health: randomNumber(-20, -10), mensaje: `El Troll te arrolló. Perdiste salud y ${moneda}.` },
+    { nombre: 'Duelo con Licántropo 🐺', tipo: 'victoria', coin: randomNumber(60, 100), exp: randomNumber(30, 50), health: 0, mensaje: `Derrotaste al Licántropo en combate feroz y ganaste ${moneda}.` },
+    { nombre: 'Ataque del Minotauro 🪓', tipo: 'derrota', coin: randomNumber(-40, -15), exp: randomNumber(10, 20), health: randomNumber(-15, -5), mensaje: `El Minotauro te golpeó fuerte. Perdiste salud y monedas.` },
+    { nombre: 'Caza del Fantasma 👻', tipo: 'victoria', coin: randomNumber(30, 50), exp: randomNumber(20, 40), health: 0, mensaje: `Has exorcizado al Fantasma. Recibiste recompensa en ${moneda}.` },
+    { nombre: 'Golpe del Dragón de Hielo ❄️', tipo: 'derrota', coin: randomNumber(-60, -20), exp: randomNumber(15, 30), health: randomNumber(-25, -10), mensaje: `El Dragón de Hielo te congeló. Salud y monedas perdidas.` },
+    { nombre: 'Combate con Hidra 🐉', tipo: 'victoria', coin: randomNumber(90, 130), exp: randomNumber(50, 80), health: 0, mensaje: `Has vencido a la Hidra y obtenido un valioso tesoro de ${moneda}.` },
+    { nombre: 'Derrota ante el Caballero Caído ⚔️', tipo: 'derrota', coin: randomNumber(-30, -10), exp: randomNumber(5, 10), health: randomNumber(-15, -5), mensaje: `El Caballero Caído te venció. Perdiste salud y monedas.` },
+    { nombre: 'Hechizo de la Bruja 🧙', tipo: 'troll', coin: 0, exp: randomNumber(20, 40), health: randomNumber(-10, -5), mensaje: `Una bruja te lanzó un hechizo. Ganas experiencia pero pierdes algo de salud.` },
+    { nombre: 'Emboscada de Bandidos 🗡️', tipo: 'troll', coin: 0, exp: randomNumber(15, 30), health: randomNumber(-5, -3), mensaje: `Te emboscaron bandidos, escapaste pero con heridas leves.` },
+    { nombre: 'Caza de la Serpiente Gigante 🐍', tipo: 'victoria', coin: randomNumber(50, 80), exp: randomNumber(30, 50), health: 0, mensaje: `Serpiente Gigante cazada. Su piel vale mucho en ${moneda}.` },
   ];
 
   let evento = eventos[Math.floor(Math.random() * eventos.length)];
@@ -44,18 +44,20 @@ let handler = async (m, { conn }) => {
   } else if (evento.tipo === 'derrota') {
     users[senderId].coin += evento.coin;
     users[senderId].exp += evento.exp;
-    users[senderId].health -= evento.health;
+    users[senderId].health += evento.health; // salud es negativa aquí
   } else if (evento.tipo === 'troll') {
     users[senderId].exp += evento.exp;
-    users[senderId].health -= evento.health;
+    users[senderId].health += evento.health; // salud negativa también
   }
 
   let img = 'https://raw.githubusercontent.com/The-King-Destroy/Adiciones/main/Contenido/1745557967796.jpeg';
-  let info = `╭━〔 Gremio de Aventureros 〕\n` +
+  let estadoSalud = users[senderId].health <= 0 ? '*¡Tu salud ha caído a 0! Cuida a tu personaje antes de seguir.*' : `Tu salud actual: ${users[senderId].health}`;
+
+  let info = `╭━〔 🛡️ Gremio de Aventureros 🛡️〕\n` +
              `┃Misión: *${evento.nombre}*\n` +
              `┃Evento: ${evento.mensaje}\n` +
              `┃Recompensa: ${evento.coin > 0 ? '+' : '-'}${Math.abs(evento.coin)} ${moneda} y +${evento.exp} XP.\n` +
-             `┃Tu salud ${users[senderId].health < 0 ? 'bajó en: ' + Math.abs(users[senderId].health) : 'se mantuvo igual.'}\n` +
+             `┃${estadoSalud}\n` +
              `╰━━━━━━━━━━━━⬣`;
 
   await conn.sendFile(m.chat, img, 'gremio.jpg', info, fkontak);
