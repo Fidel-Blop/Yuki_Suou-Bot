@@ -3,6 +3,7 @@ import fetch from 'node-fetch'
 
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return !0;
+
   const fkontak = { 
     "key": { 
       "participants": "0@s.whatsapp.net", 
@@ -16,13 +17,13 @@ export async function before(m, { conn, participants, groupMetadata }) {
       } 
     }, 
     "participant": "0@s.whatsapp.net"
-  }  
-  
+  }
+
   let pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image').catch(_ => 'https://raw.githubusercontent.com/The-King-Destroy/Adiciones/main/Contenido/1745522645448.jpeg')
   let img = await (await fetch(`${pp}`)).buffer()
   let chat = global.db.data.chats[m.chat]
-  let txt = '📢⚙️ Sistema de Seguridad: NUEVO INGRESO'
-  let txt1 = '📢⚠️ Sistema de Seguridad: SALIDA DETECTADA'
+  let txt = '🚨🟣 *ALERTA DEL SISTEMA DE VIGILANCIA – INGRESO DETECTADO* 🟣🚨'
+  let txt1 = '⚠️🔴 *SISTEMA DE SEGURIDAD – SALIDA REGISTRADA* 🔴⚠️'
   let groupSize = participants.length
 
   if (m.messageStubType == 27) {
@@ -32,12 +33,12 @@ export async function before(m, { conn, participants, groupMetadata }) {
   }
 
   if (chat.welcome && m.messageStubType == 27) {
-    let bienvenida = `🎉 *Bienvenido a Freddy Fazbear's ${groupMetadata.subject}* 🎉\n\n🧸 Usuario: @${m.messageStubParameters[0].split`@`[0]}\n🎮 ${global.welcom1 || 'Esperamos que sobrevivas tu primer turno...'}\n\n👥 Ahora somos *${groupSize} miembros*.\n🔧 Usa *#help* para ver los comandos del sistema.\n📟 Disfruta tu estadía... mientras dure.`
+    let bienvenida = `🎉🎮 *¡NUEVO GUARDIA REGISTRADO!* 🎮🎉\n\n👤 *Usuario:* @${m.messageStubParameters[0].split`@`[0]}\n📍 *Ubicación:* ${groupMetadata.subject}\n\n🦴 *Mensaje del sistema:* ${global.welcom1 || 'Prepárate para tu turno nocturno... nadie sale ileso.'}\n\n👥 *Miembros actuales:* ${groupSize}\n \n\n🧸 *Freddy Fazbear’s LATAM Security System™*`
     await conn.sendMini(m.chat, txt, dev, bienvenida, img, img, redes, fkontak)
   }
 
   if (chat.welcome && (m.messageStubType == 28 || m.messageStubType == 32)) {
-    let bye = `💀 *Abandono Detectado en ${groupMetadata.subject}*\n\n👤 Usuario: @${m.messageStubParameters[0].split`@`[0]}\n🕹️ ${global.welcom2 || 'Otra alma perdida en la oscuridad...'}\n\n👥 Ahora somos *${groupSize} miembros*.\n🛠️ Usa *#help* para cualquier emergencia.`
+    let bye = `☠️🔌 *GUARDIA DESCONECTADO* 🔌☠️\n\n👤 *Usuario:* @${m.messageStubParameters[0].split`@`[0]}\n📍 *Ubicación:* ${groupMetadata.subject}\n\n🌑 *Última transmisión:* ${global.welcom2 || 'Otra alma perdida entre animatrónicos...'}\n\n👥 *Miembros restantes:* ${groupSize}\n \n\n🎭 *Freddy Fazbear’s LATAM Security System™*`
     await conn.sendMini(m.chat, txt1, dev, bye, img, img, redes, fkontak)
   }
-} 
+}
