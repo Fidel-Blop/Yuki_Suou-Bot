@@ -1,7 +1,11 @@
-let handler = async (m, { conn, text, isRowner }) => {
+let handler = async (m, { conn, text, isAdmin, isROwner, chat }) => {
   const consola = '📡'
   const emoji = '👋'
   const denegado = '❌'
+
+  if (!isAdmin && !isROwner) {
+    return m.reply(`${denegado} *ACCESO DENEGADO*\n\nSolo un *admin* puede configurar la despedida en este grupo.`)
+  }
 
   if (!text) {
     return m.reply(
@@ -9,10 +13,13 @@ let handler = async (m, { conn, text, isRowner }) => {
     )
   }
 
-  global.welcom2 = text.trim()
+  // Asegurarse de que existe la estructura del grupo en la base de datos
+  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {}
+
+  global.db.data.chats[m.chat].bye = text.trim()
 
   m.reply(
-    `${consola} *PROTOCOLO DE SALIDA CONFIGURADO*\n\n${emoji} Nuevo mensaje de despedida cargado exitosamente:\n\n📝 _${global.welcom2}_\n\n📼 La cinta ha sido almacenada en el sistema central.`
+    `${consola} *PROTOCOLO DE SALIDA CONFIGURADO*\n\n${emoji} Nuevo mensaje de despedida cargado para este grupo:\n\n📝 _${text.trim()}_\n\n📂 Almacenado localmente en el canal de seguridad de *${chat.subject || 'el grupo'}*.`
   )
 }
 
