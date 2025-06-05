@@ -8,16 +8,16 @@ let handler = async (m, { conn, args }) => {
     let totalCommands = Object.values(global.plugins).filter((v) => v.help && v.tags).length
     
     let txt = `
-¡Bienvenido a la Central Comandos de *FNaF LATAM* 👾🤖!
+¡Bienvenido seas a la Central Comandos de *FNaF LATAM Bot* 👾🤖!
 
 ╭┈ ↷
-│⚙️ Sistema » 
-│🎮 Modos » 
-│🤖 Bot » 
-│🔌 Activado » 
-│🧟‍♂️ Usuarios » 
-│📜 Comandos » 
-│🦾 Baileys » 
+│ 👤 Cliente » @${userId.split('@')[0]}
+│🎮 Modo » Publico
+│🤖 Bot » ${(conn.user.jid == global.conn.user.jid ? 'Principal 🅥' : 'Prem Bot 🅑')}
+│🔌 Activado » ${uptime}
+│🧟‍♂️ Usuarios » ${totalreg}
+│📜 Comandos » ${totalCommands}
+│🦾 Baileys » Multi Device
 ╰─────────────────
 
 🤖 Inspirado en la comunidad FNaF LATAM, este bot fue creado con 💥 PASIÓN y ENERGÍA 💥 para que TODOS los miembros de la comunidad puedan disfrutarlo al máximo.
