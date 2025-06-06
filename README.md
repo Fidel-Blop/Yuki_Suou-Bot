@@ -27,24 +27,35 @@ Un bot de WhatsApp enfocado en la comunidad **FNaF LATAM**, desarrollado para ej
 
 Copia y pega todo el bloque de comandos dentro de Termux:
 
-``termux-setup-storage
-apt update && apt upgrade -y
-pkg install -y git nodejs ffmpeg imagemagick yarn
-git clone https://github.com/Fidel-Blop/FNaF-LATAM-Bot.git
-cd FNaF-LATAM-Bot
-yarn install
-npm start``
+``termux-setup-storage``
+
+``apt update && apt upgrade -y
+pkg install -y git nodejs ffmpeg imagemagick yarn``
+
+``git clone https://github.com/Fidel-Blop/FNaF-LATAM-Bot.git
+cd FNaF-LATAM-Bot``
+
+``yarn install``
+
+``npm start``
+
+---
 
 Escanea el QR/code si es la primera vez que lo usas. Una vez que el bot esté funcionando, presiona CTRL + C para detenerlo y continuar con el siguiente paso (opcional).
+
+--- 
 
 **🔁 Mantener el bot encendido con pm2 24/7 (opcional pero recomendado)**
 
 Instala pm2 y deja el bot funcionando en segundo plano, incluso si cierras Termux o apagas la pantalla:
 
-``npm install -g pm2
-pm2 start index.js
-pm2 save
-pm2 startup``
+``npm install -g pm2``
+
+``pm2 start index.js``
+
+``pm2 save``
+
+``pm2 startup``
 
 
 ---
