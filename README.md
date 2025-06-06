@@ -19,84 +19,39 @@ Este bot está diseñado especialmente para los fanáticos de **Five Nights at F
 
 # 🤖 FNaF LATAM Bot - WhatsApp Bot para Termux
 
-Un bot de WhatsApp enfocado en la comunidad **Five Nights at Freddy's LATAM**, desarrollado para ejecutarse de forma estable en **Termux**. Contiene comandos útiles, sin contenido NSFW, y puede funcionar 24/7 usando `pm2`.
+Un bot de WhatsApp enfocado en la comunidad **FNaF LATAM**, desarrollado para ejecutarse de forma estable en **Termux**. Contiene comandos útiles, sin contenido NSFW, y puede funcionar **24/7** usando `pm2`.
 
 ---
 
-## 🚀 Requisitos
+## 📋 Comandos rápidos para instalar en Termux
 
-- App **Termux** (desde [F-Droid](https://f-droid.org/) o GitHub)
-- Android con permisos de almacenamiento
-- Conexión a internet estable
+Copia y pega todo el bloque de comandos dentro de Termux:
 
----
-
-## 📥 Instalación en Termux
-
-### 1. Dar permisos al almacenamiento
-
-```bash
-termux-setup-storage
-
-2. Actualizar Termux e instalar paquetes necesarios
-
+``termux-setup-storage
 apt update && apt upgrade -y
 pkg install -y git nodejs ffmpeg imagemagick yarn
-
-3. Clonar este repositorio
-
 git clone https://github.com/Fidel-Blop/FNaF-LATAM-Bot.git
 cd FNaF-LATAM-Bot
-
-4. Instalar las dependencias del bot
-
 yarn install
-# o si preferís usar npm:
-# npm install
+npm start``
 
-5. Iniciar el bot manualmente
+Escanea el QR/code si es la primera vez que lo usas. Una vez que el bot esté funcionando, presiona CTRL + C para detenerlo y continuar con el siguiente paso (opcional).
 
-npm start
+**🔁 Mantener el bot encendido con pm2 24/7 (opcional pero recomendado)**
 
-🔹 Si el bot te pide escanear un QR, hacelo solo una vez.
-🔹 Una vez conectado, presioná CTRL + C para detenerlo antes de seguir con pm2.
+Instala pm2 y deja el bot funcionando en segundo plano, incluso si cierras Termux o apagas la pantalla:
 
-
----
-
-🛠 Ejecutar el bot 24/7 con pm2 (opcional pero recomendado)
-
-6. Instalar y configurar pm2
-
-npm install -g pm2
+``npm install -g pm2
 pm2 start index.js
 pm2 save
-pm2 startup
-
-Este proceso mantiene el bot encendido aunque cierres Termux o apagues la pantalla.
+pm2 startup``
 
 
 ---
 
-🧼 Limpieza y mantenimiento
+**🛡️ Importante**
 
-Para ver el estado del bot:
-
-pm2 list
-
-Para reiniciarlo manualmente:
-
-pm2 restart index
-
-Para detenerlo:
-
-pm2 stop index
-
----
-
-📌 Nota
-
-Este bot no incluye ni permite contenido NSFW, gore ni +18. Está pensado para el entretenimiento y organización de comunidades relacionadas con FNaF en LATAM.
+Este bot está libre de contenido +18, NSFW o gore. Es un proyecto comunitario enfocado en entretenimiento sano para fans de FNaF en LATAM.
 
 ---
 
