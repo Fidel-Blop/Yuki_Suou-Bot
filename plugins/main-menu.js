@@ -431,3 +431,13 @@ let handler = async (m, { conn, args }) => {
 > ✦ Juega un pvp contra otro usuario.
 ᰔᩚ *#ttt*
 > ✦ Crea una sala de juego.
+
+    let imageUrl = 'https://static.wikia.nocookie.net/freddy-fazbears-pizza/images/c/c6/FNaFMovie-Header2.jpg/revision/latest/scale-to-width-down/250?cb=20230518194602'
+
+
+
+    await conn.sendMessage(m.chat, { 
+        image: { url: imageUrl }, 
+        caption: txt 
+    }, { quoted: m })
+}
