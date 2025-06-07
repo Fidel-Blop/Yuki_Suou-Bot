@@ -49,7 +49,7 @@ let handler = async (m, { conn, args }) => {
 
 📂 『𝘔𝘰𝘥𝘰 𝘚𝘦𝘤𝘶𝘦𝘯𝘤𝘪𝘢 — 𝘋𝘦𝘴𝘤𝘢𝘳𝘨𝘢𝘴 𝘔𝘶𝘭𝘵𝘪𝘱𝘭𝘦𝘴』
 
-⫸ `•˚⊹:･ﾟ• Archivos listos para ser liberados desde la pizzería... ¡todos de una! 💾�
+⫸ `•˚⊹:･ﾟ• Archivos listos para ser liberados desde la pizzería... ¡todos de una! 💾
 ᰔᩚ *#tiktok • #tt*
 > ✦ Descarga videos de TikTok.
 ᰔᩚ *#mediafire • #mf*
@@ -58,9 +58,9 @@ let handler = async (m, { conn, args }) => {
 > ✦ Descargar vídeos de Pinterest. 
 ᰔᩚ *#mega • #mg* + [enlacé]
 > ✦ Descargar un archivo de MEGA.
-ᰔᩚ *#play • #play2*
+ᰔᩚ *#reproducir*
 > ✦ Descarga música/video de YouTube.
-ᰔᩚ *#ytmp3 • #ytmp4*
+ᰔᩚ *#ytmp3doc • !ytmp4doc*
 > ✦ Descarga música/video de YouTube mediante url.
 ᰔᩚ *#fb • #facebook*
 > ✦ Descarga videos de Facebook.
@@ -68,11 +68,11 @@ let handler = async (m, { conn, args }) => {
 > ✦ Descargar un video de Twitter/X
 ᰔᩚ *#ig • #instagram*
 > ✦ Descarga contenido de Instagram.
-ᰔᩚ *#tts • #tiktoks* + [busqueda]
+ᰔᩚ *#tts* + [busqueda]
 > ✦ Buscar videos de tiktok 
 ᰔᩚ *#terabox • #tb* + [enlace]
 > ✦ Descargar archivos por Terabox.
-ᰔᩚ *#ttimg • #ttmp3* + <url>
+ᰔᩚ *#tiktoknowm* + <url>
 > ✦ Descarga fotos/audios de tiktok. 
 ᰔᩚ *#apk • #modapk*
 > ✦ Descarga un apk de Aptoide.
@@ -248,7 +248,7 @@ let handler = async (m, { conn, args }) => {
 > ✦ Cambia ajustes del grupo para que solo los administradores envien mensaje.
 ᰔᩚ *#kick* [número / mension]
 > ✦ Elimina un usuario de un grupo.
-ᰔᩚ *#add • #añadir • #agregar* [número]
+ᰔᩚ *#add • #añadir • #agregar* 
 > ✦ Invita a un usuario a tu grupo.
 ᰔᩚ *#promote* [mension / etiquetar]
 > ✦ El bot dara administrador al usuario mencionando.
@@ -289,7 +289,7 @@ let handler = async (m, { conn, args }) => {
 ᰔᩚ *#listnum • #kicknum*
 > ✦ Elimine a usuario por el prefijo de país.
 
-🎥 『𝘉𝘢𝘫𝘢 𝘭𝘢 𝘍𝘢𝘯𝘵𝘢𝘴𝘪́𝘢 — 𝘈𝘯𝘪𝘮𝘦 & 𝘔𝘢𝘨𝘪𝘢』
+🎥 『𝘉𝘢𝘫𝘢 𝘭𝘢 𝘍𝘢𝘯𝘵𝘢𝘴𝘪𝘢 — 𝘈𝘯𝘪𝘮𝘦 & 𝘔𝘢𝘨𝘪𝘢』
     
 ❍ `•˚⊹:･ﾟ• Sumergite en mundos increíbles con tus animes favoritos 🌌✨🎭
 ᰔᩚ *#angry • #enojado* + <mencion>
@@ -361,7 +361,7 @@ let handler = async (m, { conn, args }) => {
 ᰔᩚ *#think* + <mencion>
 > ✦ Pensar en algo
 
-🚫 『𝙉𝙊 𝙀𝙎𝙏𝘼́𝙉 𝘼𝙌𝙐𝙄 𝙇𝙊𝙎 𝘾𝙊𝙈𝘼𝙉𝘿𝙊𝙎 𝙉𝙎𝙁𝙒』
+🚫 『𝙉𝙊 𝙀𝙎𝙏𝘼𝙉 𝘼𝙌𝙐𝙄 𝙇𝙊𝙎 𝘾𝙊𝙈𝘼𝙉𝘿𝙊𝙎 𝙉𝙎𝙁𝙒』
 ❍ `•˚⊹:･ﾟ• Acá no se permiten esas cosas… ¡Seguimos puros y fuertes! 💪😼
 
 🎮 『𝙂𝙊𝙉𝙕𝙊 𝙋𝙇𝘼𝙔 𝙔𝙊𝙐𝙍 𝙁𝙍𝙄𝙀𝙉𝘿𝙎』
